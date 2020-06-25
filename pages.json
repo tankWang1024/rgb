@@ -3,7 +3,12 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "首页"
+			}
+		},{
+			"path": "pages/res/res",
+			"style": {
+				"navigationBarTitleText": "结果"
 			}
 		}, {
 			"path": "pages/canvas/canvas",
@@ -13,9 +18,9 @@
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#0f0f0f",
+		"backgroundColor": "#0f0f0f"
 	}
 }

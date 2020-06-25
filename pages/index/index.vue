@@ -16,7 +16,6 @@
 	export default {
 		data() {
 			return {
-				tempFilePath: "",
 			}
 		},
 		onLoad() {
@@ -29,14 +28,13 @@
 					count: 1,
 					sizeType: 'original',
 					success(res) {
-						that.tempFilePath = res.tempFilePaths[0]
+						let tempFilePath = res.tempFilePaths[0]
 						let systemInfo = uni.getSystemInfoSync()
 						console.log(systemInfo)
-						let windowWidth = systemInfo.windowWidth // 屏幕可视宽度
-						let windowHeight = systemInfo.windowHeight
-						app.globalData.windowWidth = windowWidth
+						app.globalData.windowHeight = systemInfo.windowHeight
+						app.globalData.windowWidth = systemInfo.windowWidth	// 屏幕可视宽度
 						uni.getImageInfo({
-							src: that.tempFilePath,
+							src: tempFilePath,
 							success(res) {
 								console.log(res)
 								app.globalData.imgInfo = res

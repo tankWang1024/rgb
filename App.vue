@@ -1,13 +1,15 @@
 <script>
 	export default {
 		globalData: {
-			windowWidth: 360,
-			windowHeight: 572,
+			windowWidth: 0,
+			windowHeight: 0,
 			imgInfo: {
-				"path": "file:///storage/emulated/0/Pictures/雅安博物馆/IMG_20170926_113312.jpg",
-				"width": 4608,
-				"height": 3456,
+				"path": "",
+				"width": 0,
+				"height": 0,
 			},
+			MIC: [],
+			rgbArr: [],
 		},
 		onLaunch: function() {
 			let globalData = this.$options.globalData
