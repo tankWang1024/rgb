@@ -78,6 +78,7 @@
 			getRes() {
 				app.globalData.MIC = this.MIC;
 				app.globalData.rgbArr = this.rgbArr
+				app.globalData.rect = this.rect
 				console.log(app.globalData.MIC)
 				uni.navigateTo({
 					url: '../res/res'
@@ -95,6 +96,10 @@
 						// console.log(res.data)
 						let obj = dataGet(res.data)
 						that.rgbArr.push(obj)
+						// that.startx = 0,
+						// that.starty = 0,
+						// that.endx = 0,
+						// that.endy = 0
 					},
 					fail(err) {
 
@@ -158,7 +163,6 @@
 				this.$refs.prompt.cost = ''
 				this.promptVal = "";
 				this.rect.splice(this.rect.length - 1, 1);
-				// this.rgbArr.splice(this.rgbArr.length - 1, 1)
 				this.ctx.draw()
 				for (let item of this.rect) {
 					this.ctx.setStrokeStyle('red')
@@ -202,13 +206,13 @@
 	}
 
 	.btn-img {
-		width: 50px;
-		height: 40px;
+		width: 100rpx;
+		height: 80rpx;
 	}
 
 	.btn-box .btn {
-		height: 40px;
-		line-height: 40px;
+		height: 80rpx;
+		line-height: 80rpx;
 		background-color: rgb(255, 196, 62);
 		margin: 0;
 	}

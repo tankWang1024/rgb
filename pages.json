@@ -16,7 +16,11 @@
 				"navigationBarTitleText": "圈画图片"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/chart/chart",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "",
