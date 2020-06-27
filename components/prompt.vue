@@ -65,7 +65,6 @@
 			},
 			_confirm() {
 				//this.triggerEvent("confirm");
-				console.log(this.cost);
 				this.$emit('onConfirm', this.cost);
 				this.cost = '';
 			},

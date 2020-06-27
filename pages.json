@@ -5,7 +5,13 @@
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
-		},{
+		}, {
+			"path": "pages/chart/chart",
+			"style": {
+				"navigationBarTitleText": "关系曲线"
+			}
+		},
+		{
 			"path": "pages/res/res",
 			"style": {
 				"navigationBarTitleText": "结果"
@@ -15,12 +21,18 @@
 			"style": {
 				"navigationBarTitleText": "圈画图片"
 			}
+		}, {
+			"path": "pages/forecast/forecast",
+			"style": {
+				"navigationBarTitleText": "圈画预测区域"
+			}
+		}, {
+			"path": "pages/fores/fores",
+			"style": {
+				"navigationBarTitleText": "预测结果"
+			}
 		}
-	    ,{
-            "path" : "pages/chart/chart",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "",

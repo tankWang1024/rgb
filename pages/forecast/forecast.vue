@@ -5,16 +5,13 @@
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
 		<view class="btn-box">
 			<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
-			<button type="default" @tap="getRes" class="btn">确定</button>
+			<button type="default" @tap="getForecast" class="btn">去预测</button>
 		</view>
-		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
 	</view>
 </template>
 
 <script>
 	import app from '../../App.vue'
-
-	import prompt from '../../components/prompt.vue'
 
 	import {
 		dataGet
@@ -22,7 +19,7 @@
 
 	export default {
 		components: {
-			prompt
+
 		},
 		data() {
 			return {
@@ -37,7 +34,6 @@
 				endy: 0,
 				rect: [],
 				rgbArr: [],
-				promptVal: "",
 				MIC: [],
 			}
 		},
@@ -47,41 +43,31 @@
 		onLoad() {
 			this.c_width = app.globalData.windowWidth
 			this.c_height = app.globalData.windowHeight - 100
-			this.imgInfo = app.globalData.imgInfo
+			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
 
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
 			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
 
 		},
-		watch: {},
 		methods: {
-			revoke() {	// 撤销
+			revoke() { // 撤销
 				if (this.rect.length >= 1) {
 					this.rect.splice(this.rect.length - 1, 1);
 					this.rgbArr.splice(this.rgbArr.length - 1, 1);
-					this.MIC.splice(this.MIC.length - 1, 1);
-					console.log(this.rgbArr)
 					this.ctx.draw()
 					for (let item of this.rect) {
 						this.ctx.setStrokeStyle('red')
 						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 						this.ctx.draw(true)
 					}
-				} else {
-					// this.uni.showToast({
-					// 	title: '',
-					// 	icon:'none',
-					// });
 				}
-
 			},
-			getRes() {
-				app.globalData.MIC = this.MIC;
-				app.globalData.rgbArr = this.rgbArr
-				app.globalData.rect = this.rect
+			getForecast() {
+				app.globalData.rgbArr2 = this.rgbArr
+				app.globalData.rect2 = this.rect
 				uni.navigateTo({
-					url: '../res/res'
+					url: '../fores/fores'
 				})
 			},
 			getRGB() {
@@ -95,13 +81,9 @@
 					success(res) {
 						let obj = dataGet(res.data)
 						that.rgbArr.push(obj)
-						that.startx = 0,
-						that.starty = 0,
-						that.endx = 0,
-						that.endy = 0
 					},
 					fail(err) {
-						console.log(err)
+
 					}
 				}, that)
 			},
@@ -121,65 +103,25 @@
 				// }
 			},
 			endArt(e) {
-				this.endx = Math.round(e.changedTouches[0].x)
-				this.endy = Math.round(e.changedTouches[0].y)
-				
-				this.ctx.closePath()
-				if(this.startx > this.endx){
-					let temp = this.startx
-					this.startx = this.endx
-					this.endx = temp
-				}
-				if(this.starty > this.endy){
-					let temp = this.starty
-					this.starty = this.endy
-					this.endy = temp
-				}
 				this.rect.push({
 					startx: this.startx,
 					starty: this.starty,
 					endx: this.endx,
 					endy: this.endy
 				})
+				this.ctx.closePath()
 				this.ctx.draw()
 				for (let item of this.rect) {
 					this.ctx.setStrokeStyle('red')
 					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 					this.ctx.draw(true)
 				}
-				// 填这次绘制区域的浓度
-				this.$refs.prompt.show();
+				this.getRGB()
+				
+
 			},
 			cancelArt() {
 				console.log('cancel')
-			},
-			onConfirm(e) {
-				console.log(e);
-				let _cost = e;
-				if (_cost == '' || isNaN(_cost)) {
-					uni.showToast({
-						title: '请输入有效浓度',
-						icon: 'none'
-					})
-					return;
-				} else {
-					this.promptVal = e;
-					this.getRGB()
-					this.MIC.push(e)
-					this.$refs.prompt.hide();
-				}
-			},
-			onCancel() {
-				this.$refs.prompt.hide();
-				this.$refs.prompt.cost = ''
-				this.promptVal = "";
-				this.rect.splice(this.rect.length - 1, 1);
-				this.ctx.draw()
-				for (let item of this.rect) {
-					this.ctx.setStrokeStyle('red')
-					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-					this.ctx.draw(true)
-				}
 			},
 
 		}
