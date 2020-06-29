@@ -1,15 +1,24 @@
 <template>
 	<view class="qiun-charts" v-bind:style="{width:windowWidth+'px'}">
-		<canvas canvas-id="canvasColumn" id="canvasColumn" v-bind:style="{width:windowWidth+'px',height:'300px'}"></canvas>
+		<!-- <canvas canvas-id="canvasColumn" id="canvasColumn" v-bind:style="{width:windowWidth+'px',height:'300px'}"></canvas>
 		<view class="foot">
 			<view class="card">
 				<view class="card-item">
 					相关系数：{{conR.toFixed(4)}}
 				</view>
 				<view class="card-item">
-					回归方程：y = {{linea.toFixed(4)}} {{lineb<0?'':'+'}}{{lineb.toFixed(4)}}*x 
+					回归方程：y = {{linea.toFixed(4)}} {{lineb<0?'':'+'}}{{lineb.toFixed(4)}}*x
 				</view>
 			</view>
+		</view> -->
+		<view class="content">
+			<!-- #ifdef APP-PLUS || H5 -->
+			<view @click="echarts.onClick" :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts"
+			 v-bind:style="{width:windowWidth+'px',height:'500px'}"></view>
+			<!-- #endif -->
+			<!-- #ifndef APP-PLUS || H5 -->
+			<view>非 APP、H5 环境不支持</view>
+			<!-- #endif -->
 			<button class="btn" @tap="toForecast">去预测</button>
 		</view>
 	</view>
@@ -31,10 +40,80 @@
 				linea: 0,
 				lineb: 0,
 				// yName:'',
+				option: {
+					title: {
+						text: '',
+						textAlign:'left',
+						textStyle: {
+							fontSize:20,
+						},
+						subText: 'aaaaaa',
+						subtextStyle: {
+							
+						}
+					},
+					label:{
+						formatter:'',
+						align:'right'
+					},
+					background: '#FFFFFF',
+					tooltip: {},
+					legend: {
+						data: [{
+							name: '',
+						}]
+					},
+					xAxis: {
+						name: 'concentration',
+						nameTextStyle: {
+							fontSize: 10,
+							align: 'right',
+							verticalAlign:'bottom',
+						},
+						type: 'value',
+						scale: true,
+						splitLine: {
+							show: false
+						}
+					},
+					yAxis: {
+						name: '',
+						nameTextStyle: {
+							fontSize: 10,
+							align: 'right',
+							verticalAlign:'bottom',
+						},
+						type: 'value',
+						scale: true,
+						splitLine: {
+							lineStyle: {
+								type: 'dotted'
+							}
+						}
+					},
+					series: [{
+						type: 'scatter',
+						data: [],
+						symbolSize: 6,
+					}, {
+						type: 'line',
+						symbol: 'none',
+						data: []
+					}, ]
+				},
+
+
+
 			}
 		},
 		methods: {
-			toForecast(){
+
+			onViewClick(options) {
+				console.log(options)
+			},
+
+
+			toForecast() {
 				uni.chooseImage({
 					count: 1,
 					sizeType: 'original',
@@ -50,43 +129,43 @@
 								})
 							},
 							fail(err) {
-				 
+
 							},
-						}) 
+						})
 					},
 					fail(err) {
 						console.log('取消选图')
 					}
 				})
 			},
-			showColumn(canvasId, chartData) {
-				canvaColumn = new uCharts({
-					$this: _self,
-					canvasId: 'canvasColumn',
-					type: 'mix',
-					legend: true,
-					fontSize: 11,
-					background: '#FFFFFF',
-					pixelRatio: 1,
-					animation: true,
-					categories: chartData.categories,
-					series: chartData.series,
-					xAxis: {
-						disableGrid: true,
-					},
-					yAxis: {
-						gridType: 'dash',
-					},
-					dataLabel: true,
-					width: _self.windowWidth,
-					height: 300,
-					extra: {
-						column: {
-							width: _self.windowWidth * 0.45 / chartData.categories.length
-						}
-					}
-				});
-			},
+			// showColumn(canvasId, chartData) {
+			// 	canvaColumn = new uCharts({
+			// 		$this: _self,
+			// 		canvasId: 'canvasColumn',
+			// 		type: 'mix',
+			// 		legend: true,
+			// 		fontSize: 11,
+			// 		background: '#FFFFFF',
+			// 		pixelRatio: 1,
+			// 		animation: true,
+			// 		categories: chartData.categories,
+			// 		series: chartData.series,
+			// 		xAxis: {
+			// 			disableGrid: true,
+			// 		},
+			// 		yAxis: {
+			// 			gridType: 'dash',
+			// 		},
+			// 		dataLabel: true,
+			// 		width: _self.windowWidth,
+			// 		height: 300,
+			// 		extra: {
+			// 			column: {
+			// 				width: _self.windowWidth * 0.45 / chartData.categories.length
+			// 			}
+			// 		}
+			// 	});
+			// },
 			connectionR(arrx, arry, sumx, sumy) {
 				let xiyi = 0
 				let xi2 = 0
@@ -132,12 +211,14 @@
 		},
 		onLoad(options) {
 			_self = this;
+			options.y = 'R' //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			app.globalData.yName = options.y
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
 			let categories = app.globalData.MIC.map((cur, index) => {
 				return Number(cur)
 			})
+
 			let series = [{
 				name: '原数据',
 				type: 'point',
@@ -208,17 +289,66 @@
 			this.lineb = obj.lineb
 			app.globalData.linea = obj.linea
 			app.globalData.lineb = obj.lineb
-			
+			// console.log(app.globalData)
 			for (let item of categories) {
 				series[1].data.push(Number(item * this.lineb + this.linea))
 			}
-			let line = {
-				categories,
-				series
+			let echart1 = []
+			for (let i = 0; i < categories.length; i++) {
+				let arr = []
+				arr = [categories[i], series[0].data[i]]
+				echart1.push(arr)
 			}
-			_self.showColumn('canvasColumn', line)
+			this.option.series[0].data = echart1
+			let echart2 = []
+			echart2.push([categories[0], Number(categories[0] * this.lineb + this.linea)])
+			let index = categories.length - 1
+			echart2.push([categories[index], Number(categories[index] * this.lineb + this.linea)])
+			this.option.series[1].data = echart2
+			this.option.title.text = 'linear correlation: ' + this.conR.toFixed(4)
+			this.option.yAxis.name = options.y
+			
+			// let line = {
+			// 	categories,
+			// 	series
+			// }
+			// _self.showColumn('canvasColumn', line)
 		},
+	}
+</script>
 
+<script module="echarts" lang="renderjs">
+	let myChart
+	export default {
+		mounted() {
+			if (typeof window.echarts === 'function') {
+				this.initEcharts()
+			} else {
+				// 动态引入较大类库避免影响页面展示
+				const script = document.createElement('script')
+				// view 层的页面运行在 www 根目录，其相对路径相对于 www 计算
+				script.src = 'static/echarts.js'
+				script.onload = this.initEcharts.bind(this)
+				document.head.appendChild(script)
+			}
+		},
+		methods: {
+			initEcharts() {
+				myChart = echarts.init(document.getElementById('echarts'))
+				// 观测更新的数据在 view 层可以直接访问到
+				myChart.setOption(this.option)
+			},
+			updateEcharts(newValue, oldValue, ownerInstance, instance) {
+				// 监听 service 层数据变更
+				myChart.setOption(newValue)
+			},
+			onClick(event, ownerInstance) {
+				// 调用 service 层的方法
+				ownerInstance.callMethod('onViewClick', {
+					test: 'test'
+				})
+			}
+		}
 	}
 </script>
 

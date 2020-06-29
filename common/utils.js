@@ -3,7 +3,6 @@ export const dataGet = function(arr) {
 	let rSum = 0,
 		gSum = 0,
 		bSum = 0;
-	console.log(itemNum)
 	for (let i = 0; i < arr.length; i++) {
 		if (i % 4 == 0) {
 			rSum += arr[i]
@@ -18,5 +17,12 @@ export const dataGet = function(arr) {
 		r: rSum / itemNum,
 		g: gSum / itemNum,
 		b: bSum / itemNum
+	}
+}
+
+export const getMinDis = function(arr){
+	let minDistance = Math.abs(arr[0] - arr[1])
+	for(let i=0; i<arr.length; i++){
+		
 	}
 }
