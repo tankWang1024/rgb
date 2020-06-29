@@ -27,10 +27,10 @@
 <script>
 	import app from '../../App.vue'
 
-	import uCharts from '../../components/uCharts/u-charts.js';
+	// import uCharts from '../../components/uCharts/u-charts.js';
 
-	var _self; //  _self  <==>  this
-	var canvaColumn = null; // 实例
+	// var _self; //  _self  <==>  this
+	// var canvaColumn = null; // 实例
 	export default {
 		data() {
 			return {
@@ -206,7 +206,7 @@
 			}
 		},
 		onLoad(options) {
-			_self = this;
+			// _self = this;
 			app.globalData.yName = options.y
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
@@ -236,43 +236,43 @@
 				case 'R':
 					console.log('R');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number(item['r'].toFixed(2)))
+						series[0].data.push(item['r'])
 					}
 					break;
 				case 'G':
 					console.log('G');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number(item['g'].toFixed(2)))
+						series[0].data.push(item['g'])
 					}
 					break;
 				case 'B':
 					console.log('B');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number(item['b'].toFixed(2)))
+						series[0].data.push(item['b'])
 					}
 					break;
 				case 'G/B':
 					console.log('G/B');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number((item['g'] / item['b']).toFixed(2)))
+						series[0].data.push(item['g'] / item['b'])
 					}
 					break;
 				case 'R/B':
 					console.log('R/B');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number((item['r'] / item['b']).toFixed(2)))
+						series[0].data.push(item['r'] / item['b'])
 					}
 					break;
 				case 'R/G':
 					console.log('R/G');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number((item['r'] / item['g']).toFixed(2)))
+						series[0].data.push(item['r'] / item['g'])
 					}
 					break;
 				case '灰度':
 					console.log('灰度');
 					for (let item of app.globalData.rgbArr) {
-						series[0].data.push(Number((0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b']).toFixed(2)))
+						series[0].data.push(0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'])
 					}
 					break;
 			}
