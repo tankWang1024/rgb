@@ -103,6 +103,18 @@
 				// }
 			},
 			endArt(e) {
+				this.endx = Math.round(e.changedTouches[0].x)
+				this.endy = Math.round(e.changedTouches[0].y)
+				if(this.startx > this.endx){
+					let temp = this.startx
+					this.startx = this.endx
+					this.endx = temp
+				}
+				if(this.starty > this.endy){
+					let temp = this.starty
+					this.starty = this.endy
+					this.endy = temp
+				}
 				this.rect.push({
 					startx: this.startx,
 					starty: this.starty,

@@ -4,7 +4,7 @@
 			<view class="rect">
 				图片
 			</view>
-			<view class="title-num">
+			<view class="num">
 				浓度
 			</view>
 			<view class="rgb">
@@ -12,7 +12,9 @@
 			</view>
 		</view>
 		<view v-for="(item,index) in rect" class="box">
-			<canvas :canvas-id="index+'c'" v-bind:style="{width:'50px',height:'60px'}"></canvas>
+			<view class="canWarp">
+				<canvas :canvas-id="index+'c'" v-bind:style="{width:'60px',height:'50px'}"></canvas>
+			</view>
 			<view class="num">{{MIC[index]}}</view>
 			<view class="rgb">
 				<text>{{rgbArr[index].r.toFixed(2)}}</text>
@@ -25,11 +27,12 @@
 				选择关系
 			</view>
 			<view class="card">
-				<view class="card-item" v-for="(item,index) in yArr" @tap="checkY(index)">
-					<image :src="index == selectIndex?'../../static/xing1.svg':'../../static/xing2.svg'" ></image>
-					{{item}}
+				<view class="card-item" v-for="(item,index) in yArr" @tap="checkY(index)" :class="[index === selectIndex?'selectItem':'']">
+					<image :src="index == selectIndex?'../../static/check.svg':''"></image>
+					<view class="item-text">
+						{{item}}
+					</view>
 				</view>
-
 			</view>
 			<button class="btn" @tap="toChart">确定</button>
 		</view>
@@ -50,19 +53,18 @@
 				rect: [],
 				ctxn: [],
 				imgInfo: null,
-				yArr: ['G/B', 'R/B', 'R/G', 'R', 'G', 'B'],
+				yArr: ['G/B', 'R/B', 'R/G', 'R', 'G', 'B','灰度'],
 				selectIndex: 0,
 			}
 		},
-		methods:{
-			checkY(index){
+		methods: {
+			checkY(index) {
 				this.selectIndex = index
 				let y = this.yArr[index]
-				
 			},
-			toChart(){
+			toChart() {
 				uni.navigateTo({
-					url:'../chart/chart?y='+this.yArr[this.selectIndex]
+					url: '../chart/chart?y=' + this.yArr[this.selectIndex]
 				})
 			}
 		},
@@ -83,8 +85,8 @@
 			for (let i = 0; i < this.rect.length; i++) {
 				this.ctxn[i] = uni.createCanvasContext(i + 'c')
 				// 放大系数
-				let we = 50 / (Math.abs(this.rect[i].startx - this.rect[i].endx))
-				let he = 60 / (Math.abs(this.rect[i].starty - this.rect[i].endy))
+				let we = 60 / (Math.abs(this.rect[i].startx - this.rect[i].endx))
+				let he = 50 / (Math.abs(this.rect[i].starty - this.rect[i].endy))
 				this.ctxn[i].drawImage(this.imgInfo.path, -this.rect[i].startx * we, -this.rect[i].starty * he, windowWidth * we, (
 					windowHeight - 100) * he)
 			}
@@ -97,43 +99,51 @@
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		margin: 40rpx 20rpx;
+		padding: 40rpx;
 		text-align: center;
+		background-color: #000000;
+		color: #FFFFFF;
+		font-size: 28rpx;
 	}
 
 	.rect {
-		width: 100rpx;
-	}
-
-	.title-num {
 		width: 120rpx;
+		text-align: center;
 	}
 
 	.box {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		margin: 40rpx 20rpx;
+		padding: 40rpx 0;
+		margin: 0 40rpx;
+		border-bottom: 1px solid rgb(210, 210, 210);
+		font-size: 28rpx;
+		text-align: center;
 	}
 
 	.rgb {
+		flex: 1;
 		display: flex;
 		justify-content: space-around;
 	}
 
 	.num {
-		width: 120rpx;
+		width: 200rpx;
 		text-align: center;
+	}
+
+	.canWarp {
+		border-radius: 20rpx;
+		overflow: hidden;
 	}
 
 	.rgb text {
-		width: 160rpx;
-		text-align: center;
+		flex: 1;
 	}
 
 	.foot {
-		width: 60%;
-		margin: 80rpx auto 0;
+		margin: 80rpx 60rpx 0;
 	}
 
 	.card-title {
@@ -141,28 +151,55 @@
 	}
 
 	.card {
-		padding: 20rpx;
-		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
-		border-radius: 20rpx;
-
+		display: grid;
+		grid-template-columns: repeat(2, 50%);
+		grid-gap: 40rpx;
 	}
 
 	.card-item {
-		padding: 20rpx;
-		border-bottom: 1rpx solid rgb(158, 166, 183);
+		width: 100%;
+		height: 160rpx;
+		color: #FFFFFF;
+		border-radius: 30rpx;
+		padding: 40rpx;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		border: 1px solid rgb(187, 187, 187);
+		color: rgb(176, 176, 176);
 	}
 
 	.card-item image {
-		width: 36rpx;
-		height: 36rpx;
-		margin-right: 40rpx;
+		width: 40rpx;
+		height: 40rpx;
+		padding: 8rpx;
+		box-sizing: border-box;
+		border-radius: 50%;
+		background-color: #FFFFFF;
+		border: 1px solid rgb(176, 176, 176);
 	}
 
-	.btn {
-		height: 70rpx;
-		line-height: 70rpx;
-		margin: 40rpx 0 80rpx;
-		background-color: rgb(255, 196, 62);
+	.item-text {
+		height: 38rpx;
+		font-size: 38rpx;
+		text-align: right;
+	}
+
+	.selectItem {
+		background-color: rgb(92, 80, 241);
 		color: #FFFFFF;
+		border: none;
+	}
+	.selectItem image{
+		border: none;
+	}
+	.btn {
+		border-radius: 20rpx;
+		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
+		margin: 60rpx 0 80rpx;
+		color: #000000;
+		background-color: rgb(255, 196, 62);
+		font-size: 32rpx;
 	}
 </style>

@@ -2,10 +2,11 @@
 	<view class="content">
 		<view class="main">
 			<image class="logo-img" src="../../static/logo.svg" mode="scaleToFill"></image>
-			<text>浓度检测</text>
+			<!-- <text>concentration prediction</text> -->
+			<text>浓度预测</text>
 		</view>
 		<view class="btn-box">
-			<button type="default" class="btn" @click="toPhoto">开始检测</button>
+			<button class="btn" @click="toPhoto">开始检测</button>
 		</view>
 	</view>
 </template>
@@ -68,6 +69,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		background-image: url(../../static/index.png);
+		background-size: 100% 100%;
 	}
 
 	.logo-img {
@@ -81,7 +84,8 @@
 
 	.btn-box {
 		height: 30%;
-		padding: 0 40rpx;
+		width: 70%;
+		margin: 0 auto;
 		display: flex;
 		align-items: center;
 	}
@@ -90,5 +94,6 @@
 		background-color: rgb(92, 80, 241);
 		color: #FFFFFF;
 		flex: 1;
+		letter-spacing: 2rpx;
 	}
 </style>

@@ -7,7 +7,7 @@
 			<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
 			<button type="default" @tap="getRes" class="btn">确定</button>
 		</view>
-		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
+		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
 	</view>
 </template>
 
@@ -171,7 +171,7 @@
 			},
 			onCancel() {
 				this.$refs.prompt.hide();
-				this.$refs.prompt.cost = ''
+				// this.$refs.prompt.cost = ''
 				this.promptVal = "";
 				this.rect.splice(this.rect.length - 1, 1);
 				this.ctx.draw()

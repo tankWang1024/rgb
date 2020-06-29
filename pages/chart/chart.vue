@@ -43,18 +43,18 @@
 				option: {
 					title: {
 						text: '',
-						textAlign:'left',
+						textAlign: 'left',
 						textStyle: {
-							fontSize:20,
+							fontSize: 20,
 						},
-						subText: 'aaaaaa',
-						subtextStyle: {
-							
-						}
+						// subText: '富文本标题',
+						// subtextStyle: {
+						// 	align:'right'
+						// }
 					},
-					label:{
-						formatter:'',
-						align:'right'
+					label: {
+						formatter: '',
+						align: 'right'
 					},
 					background: '#FFFFFF',
 					tooltip: {},
@@ -68,7 +68,7 @@
 						nameTextStyle: {
 							fontSize: 10,
 							align: 'right',
-							verticalAlign:'bottom',
+							verticalAlign: 'bottom',
 						},
 						type: 'value',
 						scale: true,
@@ -81,7 +81,7 @@
 						nameTextStyle: {
 							fontSize: 10,
 							align: 'right',
-							verticalAlign:'bottom',
+							verticalAlign: 'bottom',
 						},
 						type: 'value',
 						scale: true,
@@ -101,9 +101,6 @@
 						data: []
 					}, ]
 				},
-
-
-
 			}
 		},
 		methods: {
@@ -111,7 +108,6 @@
 			onViewClick(options) {
 				console.log(options)
 			},
-
 
 			toForecast() {
 				uni.chooseImage({
@@ -211,7 +207,6 @@
 		},
 		onLoad(options) {
 			_self = this;
-			options.y = 'R' //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			app.globalData.yName = options.y
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
@@ -274,6 +269,12 @@
 						series[0].data.push(Number((item['r'] / item['g']).toFixed(2)))
 					}
 					break;
+				case '灰度':
+					console.log('灰度');
+					for (let item of app.globalData.rgbArr) {
+						series[0].data.push(Number((0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b']).toFixed(2)))
+					}
+					break;
 			}
 
 			this.bubleSort(categories, series[0].data)
@@ -307,7 +308,7 @@
 			this.option.series[1].data = echart2
 			this.option.title.text = 'linear correlation: ' + this.conR.toFixed(4)
 			this.option.yAxis.name = options.y
-			
+
 			// let line = {
 			// 	categories,
 			// 	series
@@ -379,6 +380,6 @@
 		line-height: 70rpx;
 		margin: 40rpx 0 80rpx;
 		background-color: rgb(255, 196, 62);
-		color: #FFFFFF;
+		color: #000000;
 	}
 </style>

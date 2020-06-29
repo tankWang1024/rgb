@@ -7,12 +7,14 @@
 			<view class="rgb">
 				<text>{{interText}}</text>
 			</view>
-			<view class="title-num">
+			<view class="num">
 				预测浓度
 			</view>
 		</view>
 		<view v-for="(item,index) in rect" class="box">
-			<canvas :canvas-id="index+'c'" v-bind:style="{width:'50px',height:'60px'}"></canvas>
+			<view class="canWarp">
+				<canvas :canvas-id="index+'c'" v-bind:style="{width:'60px',height:'50px'}"></canvas>
+			</view>
 			<view class="rgb">
 				<text>{{inter[index].toFixed(4)}}</text>
 			</view>
@@ -31,8 +33,8 @@
 				rgbArr: [],
 				rect: [],
 				ctxn: [],
-				interText:'',
-				inter:[],
+				interText: '',
+				inter: [],
 				imgInfo: null,
 			}
 		},
@@ -95,8 +97,15 @@
 						this.inter.push(item['r'] / item['g'])
 					}
 					break;
+				case '灰度':
+					console.log('灰度');
+					for (let item of app.globalData.rgbArr) {
+						this.MIC.push((0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'] - linea) / lineb)
+						this.inter.push(0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'])
+					}
+					break;
 			}
-			
+
 			let windowHeight = app.globalData.windowHeight
 			let windowWidth = app.globalData.windowWidth
 			for (let i = 0; i < this.rect.length; i++) {
@@ -116,72 +125,46 @@
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		margin: 40rpx 20rpx;
+		padding: 40rpx;
 		text-align: center;
+		background-color: #000000;
+		color: #FFFFFF;
+		font-size: 28rpx;
 	}
 
 	.rect {
-		width: 100rpx;
-	}
-
-	.title-num {
-		width: 180rpx;
+		width: 120rpx;
+		text-align: center;
 	}
 
 	.box {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		margin: 40rpx 20rpx;
+		padding: 40rpx 0;
+		margin: 0 40rpx;
+		border-bottom: 1px solid rgb(210, 210, 210);
+		font-size: 28rpx;
+		text-align: center;
 	}
 
 	.rgb {
 		flex: 1;
-		text-align: center;
+		display: flex;
+		justify-content: center;
 	}
 
 	.num {
-		width: 180rpx;
+		width: 200rpx;
 		text-align: center;
+	}
+
+	.canWarp {
+		border-radius: 20rpx;
+		overflow: hidden;
 	}
 
 	.rgb text {
-		width: 160rpx;
-		text-align: center;
-	}
-
-	.foot {
-		width: 60%;
-		margin: 80rpx auto 0;
-	}
-
-	.card-title {
-		margin: 40rpx 0;
-	}
-
-	.card {
-		padding: 20rpx;
-		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
-		border-radius: 20rpx;
-
-	}
-
-	.card-item {
-		padding: 20rpx;
-		border-bottom: 1rpx solid rgb(158, 166, 183);
-	}
-
-	.card-item image {
-		width: 36rpx;
-		height: 36rpx;
-		margin-right: 40rpx;
-	}
-
-	.btn {
-		height: 70rpx;
-		line-height: 70rpx;
-		margin: 40rpx 0 80rpx;
-		background-color: rgb(255, 196, 62);
-		color: #FFFFFF;
+		flex: 1;
 	}
 </style>

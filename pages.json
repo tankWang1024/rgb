@@ -1,14 +1,14 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/chart/chart",
-			"style": {
-				"navigationBarTitleText": "关系曲线"
-			}
-		},{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页"
+			}
+		},{
+			"path": "pages/chart/chart",
+			"style": {
+				"navigationBarTitleText": "关系曲线"
 			}
 		},
 		{
@@ -36,8 +36,8 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "",
-		"navigationBarBackgroundColor": "#0f0f0f",
-		"backgroundColor": "#0f0f0f"
+		"navigationBarBackgroundColor": "#000000",
+		"backgroundColor": "#000000"
 	},
 	"condition" : { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
