@@ -196,7 +196,9 @@
 	}
 	.btn {
 		border-radius: 20rpx;
-		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
+		height: 80rpx;
+		line-height: 80rpx;
+		/* box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19); */
 		margin: 60rpx 0 80rpx;
 		color: #000000;
 		background-color: rgb(255, 196, 62);

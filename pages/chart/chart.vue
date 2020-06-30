@@ -11,10 +11,16 @@
 				</view>
 			</view>
 		</view> -->
+		<view class="title">
+			linear correlation: <text>{{conR.toFixed(4)}}</text>
+		</view>
+		<view class="sub-title">
+			Regression Equation: <text>y={{linea.toFixed(4)}}{{lineb<0?'':'+'}}{{lineb.toFixed(4)}}*x</text>
+		</view>
 		<view class="content">
 			<!-- #ifdef APP-PLUS || H5 -->
 			<view @click="echarts.onClick" :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts"
-			 v-bind:style="{width:windowWidth+'px',height:'500px'}"></view>
+			 v-bind:style="{width:windowWidth+'px',height:'400px'}"></view>
 			<!-- #endif -->
 			<!-- #ifndef APP-PLUS || H5 -->
 			<view>非 APP、H5 环境不支持</view>
@@ -41,17 +47,17 @@
 				lineb: 0,
 				// yName:'',
 				option: {
-					title: {
-						text: '',
-						textAlign: 'left',
-						textStyle: {
-							fontSize: 20,
-						},
-						// subText: '富文本标题',
-						// subtextStyle: {
-						// 	align:'right'
-						// }
-					},
+					// title: {
+					// 	text: '',
+					// 	textAlign: 'left',
+					// 	textStyle: {
+					// 		fontSize: 20,
+					// 	},
+					// 	// subText: '富文本标题',
+					// 	// subtextStyle: {
+					// 	// 	align:'right'
+					// 	// }
+					// },
 					label: {
 						formatter: '',
 						align: 'right'
@@ -306,7 +312,7 @@
 			let index = categories.length - 1
 			echart2.push([categories[index], Number(categories[index] * this.lineb + this.linea)])
 			this.option.series[1].data = echart2
-			this.option.title.text = 'linear correlation: ' + this.conR.toFixed(4)
+			// this.option.title.text = 'linear correlation: ' + this.conR.toFixed(4)
 			this.option.yAxis.name = options.y
 
 			// let line = {
@@ -359,26 +365,33 @@
 		margin: 80rpx auto 0;
 	}
 
-	.card-title {
-		margin: 40rpx 0;
+	.title {
+		padding: 20rpx;
+		color: rgb(107, 107, 107);
 	}
 
-	.card {
-		padding: 20rpx;
-		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
-		border-radius: 20rpx;
-
+	.title text {
+		padding-left: 20rpx;
+		font-weight: 700;
+		color: rgb(91, 79, 240);
 	}
 
-	.card-item {
-		padding: 20rpx;
-		border-bottom: 1rpx solid rgb(158, 166, 183);
+	.sub-title {
+		padding-left: 20rpx;
+		color: #000000;
+		font-size: 40rpx;
+		font-weight: 700;
+	}
+
+	.sub-title text {
+		color: rgb(91, 79, 240);
 	}
 
 	.btn {
-		height: 70rpx;
-		line-height: 70rpx;
-		margin: 40rpx 0 80rpx;
+		width: 80%;
+		height: 80rpx;
+		line-height: 80rpx;
+		margin: 40rpx auto;
 		background-color: rgb(255, 196, 62);
 		color: #000000;
 	}

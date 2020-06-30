@@ -65,11 +65,15 @@
 			add() {
 				if (this.isNum(this.cost)) {
 					this.cost = Number(this.cost) + 1
+				}else{
+					this.cost = 0
 				}
 			},
 			incre() {
 				if (this.isNum(this.cost) == 2) {
-					this.cost = Number(this.cost) - 1
+					if(this.cost - 1 >= 0){
+						this.cost = Number(this.cost) - 1
+					}
 				}
 			},
 			hide: function() {
