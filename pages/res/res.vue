@@ -37,7 +37,6 @@
 			<button class="btn" @tap="toChart">确定</button>
 		</view>
 	</view>
-
 </template>
 
 <script>
@@ -143,7 +142,7 @@
 	}
 
 	.foot {
-		margin: 80rpx 60rpx 0;
+		margin: 80rpx 40rpx;
 	}
 
 	.card-title {
@@ -152,8 +151,8 @@
 
 	.card {
 		display: grid;
-		grid-template-columns: repeat(2, 50%);
-		grid-gap: 40rpx;
+		grid-template-columns: repeat(2, 47%);
+		grid-gap: 6%;
 	}
 
 	.card-item {
@@ -162,6 +161,7 @@
 		color: #FFFFFF;
 		border-radius: 30rpx;
 		padding: 40rpx;
+		margin: 16rpx 0;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;

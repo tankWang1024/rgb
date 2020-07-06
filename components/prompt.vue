@@ -198,7 +198,7 @@
 
 	.prompt-certain-btn {
 		width: 100%;
-		box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19);
+		/* box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.2), 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.19); */
 		background-color: rgb(255, 196, 62);
 	}
 
