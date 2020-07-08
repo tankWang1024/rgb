@@ -45,7 +45,6 @@
 			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
-
 			this.ctx.setFontSize(32)
 			
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')

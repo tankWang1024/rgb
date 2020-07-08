@@ -1,14 +1,19 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/chart/chart",
+			"path": "pages/canvas/canvas",
 			"style": {
-				"navigationBarTitleText": "关系曲线"
+				"navigationBarTitleText": "圈画图片"
 			}
 		},{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页"
+			}
+		},{
+			"path": "pages/chart/chart",
+			"style": {
+				"navigationBarTitleText": "关系曲线"
 			}
 		},
 		{
@@ -16,12 +21,7 @@
 			"style": {
 				"navigationBarTitleText": "结果"
 			}
-		}, {
-			"path": "pages/canvas/canvas",
-			"style": {
-				"navigationBarTitleText": "圈画图片"
-			}
-		}, {
+		},  {
 			"path": "pages/forecast/forecast",
 			"style": {
 				"navigationBarTitleText": "圈画预测区域"

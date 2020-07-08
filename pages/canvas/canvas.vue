@@ -3,11 +3,13 @@
 		<canvas canvas-id="myCanvas" id="myCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}" @touchstart="startArt"
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
+		<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
 		<view class="btn-box">
-			<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
+			<button type="default" @tap="changeGradient" class="btn gradient">{{gradientState}}</button>
 			<button type="default" @tap="getRes" class="btn">确定</button>
 		</view>
 		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
+		<prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt2>
 	</view>
 </template>
 
@@ -15,6 +17,7 @@
 	import app from '../../App.vue'
 
 	import prompt from '../../components/prompt.vue'
+	import prompt2 from '../../components/prompt2.vue'
 
 	import {
 		dataGet
@@ -22,10 +25,12 @@
 
 	export default {
 		components: {
-			prompt
+			prompt,
+			prompt2
 		},
 		data() {
 			return {
+				gradientFlag: false,
 				imgInfo: {},
 				ctx: null,
 				rgbctx: null,
@@ -37,8 +42,13 @@
 				endy: 0,
 				rect: [],
 				rgbArr: [],
-				promptVal: "",
+				promptVal: 0,
 				MIC: [],
+			}
+		},
+		computed: {
+			gradientState() {
+				return this.gradientFlag ? '关闭梯度绘制' : '开启梯度绘制'
 			}
 		},
 		onReady() {
@@ -56,12 +66,30 @@
 		},
 		watch: {},
 		methods: {
-			revoke() {	// 撤销
+			changeGradient() {
+				this.gradientFlag = !this.gradientFlag
+				if (this.gradientFlag) { // 开启
+				
+
+				} else { // 关闭
+					let count = this.rect.length - this.MIC.length
+					console.log('矩形' + count)
+					if(count){
+						this.$refs.prompt2.show()
+					}
+				}
+			},
+
+			revoke() { // 撤销
 				if (this.rect.length >= 1) {
+					console.log(this.rgbArr.length,this.MIC.length,this.rect.length)
+					if (this.MIC.length == this.rect.length) { // 开启梯度再撤销时，浓度数量跟矩形一样就一起撤销
+						this.MIC.splice(this.MIC.length - 1, 1);
+						this.rgbArr.splice(this.rgbArr.length - 1, 1);
+						console.log('同时撤销了浓度值')
+					}
 					this.rect.splice(this.rect.length - 1, 1);
-					this.rgbArr.splice(this.rgbArr.length - 1, 1);
-					this.MIC.splice(this.MIC.length - 1, 1);
-					console.log(this.rgbArr)
+					
 					this.ctx.draw()
 					for (let item of this.rect) {
 						this.ctx.setStrokeStyle('red')
@@ -69,20 +97,21 @@
 						this.ctx.draw(true)
 					}
 				} else {
-					// this.uni.showToast({
-					// 	title: '',
-					// 	icon:'none',
-					// });
 				}
 
 			},
 			getRes() {
-				app.globalData.MIC = this.MIC;
-				app.globalData.rgbArr = this.rgbArr
-				app.globalData.rect = this.rect
-				uni.navigateTo({
-					url: '../res/res'
-				})
+				if(this.MIC.length == this.rect.length){
+					app.globalData.MIC = this.MIC;
+					app.globalData.rgbArr = this.rgbArr
+					app.globalData.rect = this.rect
+					uni.navigateTo({
+						url: '../res/res'
+					})
+				}else{
+					this.$refs.prompt2.show()
+				}
+				
 			},
 			getRGB() {
 				let that = this;
@@ -96,9 +125,9 @@
 						let obj = dataGet(res.data)
 						that.rgbArr.push(obj)
 						that.startx = 0,
-						that.starty = 0,
-						that.endx = 0,
-						that.endy = 0
+							that.starty = 0,
+							that.endx = 0,
+							that.endy = 0
 					},
 					fail(err) {
 						console.log(err)
@@ -115,22 +144,18 @@
 				this.ctx.setStrokeStyle('red')
 				this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
 				this.ctx.draw()
-				// for (let item of this.rect) {	// 性能太差
-				// 	this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-				// 	this.ctx.draw(true)
-				// }
 			},
 			endArt(e) {
 				this.endx = Math.round(e.changedTouches[0].x)
 				this.endy = Math.round(e.changedTouches[0].y)
-				
+
 				this.ctx.closePath()
-				if(this.startx > this.endx){
+				if (this.startx > this.endx) {
 					let temp = this.startx
 					this.startx = this.endx
 					this.endx = temp
 				}
-				if(this.starty > this.endy){
+				if (this.starty > this.endy) {
 					let temp = this.starty
 					this.starty = this.endy
 					this.endy = temp
@@ -147,8 +172,10 @@
 					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 					this.ctx.draw(true)
 				}
-				// 填这次绘制区域的浓度
-				this.$refs.prompt.show();
+				if (!this.gradientFlag) {
+					// 非梯度状态，填这次绘制区域的浓度
+					this.$refs.prompt.show();
+				}
 			},
 			cancelArt() {
 				console.log('cancel')
@@ -170,8 +197,7 @@
 				}
 			},
 			onCancel() {
-				this.$refs.prompt.hide();
-				// this.$refs.prompt.cost = ''
+				this.$refs.prompt2.hide();
 				this.promptVal = "";
 				this.rect.splice(this.rect.length - 1, 1);
 				this.ctx.draw()
@@ -180,6 +206,38 @@
 					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 					this.ctx.draw(true)
 				}
+			},
+			onConfirm2(starter, gradient) {
+				console.log(starter, gradient);
+				let that = this;
+				let length = this.MIC.length
+				for (let i = this.MIC.length; i < this.rect.length; i++) {
+					this.MIC.push(starter + (i - length) * gradient)
+					uni.canvasGetImageData({
+						canvasId: 'rgbCanvas',
+						x: this.rect[i].startx,
+						y: this.rect[i].starty,
+						width: this.rect[i].endx - this.rect[i].startx,
+						height: this.rect[i].endy - this.rect[i].starty,
+						success(res) {
+							let obj = dataGet(res.data)
+							that.rgbArr.push(obj)
+							that.startx = 0
+							that.starty = 0
+							that.endx = 0
+							that.endy = 0
+						},
+						fail(err) {
+							console.log(err)
+						}
+					}, that)
+				}
+				this.gradientFlag = false
+				this.$refs.prompt2.hide();
+			},
+			onCancel2() {
+				this.$refs.prompt2.hide();
+				this.gradientFlag = true
 			},
 
 		}
@@ -219,6 +277,10 @@
 	.btn-img {
 		width: 100rpx;
 		height: 80rpx;
+		margin-right: 20rpx;
+		position: absolute;
+		right: 10%;
+		bottom: 90px;
 	}
 
 	.btn-box .btn {
@@ -226,5 +288,9 @@
 		line-height: 80rpx;
 		background-color: rgb(255, 196, 62);
 		margin: 0;
+	}
+
+	.gradient {
+		width: 70%;
 	}
 </style>

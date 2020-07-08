@@ -9,12 +9,24 @@
 				</view>
 				<image class="prompt-img" src="../static/shut.svg" @tap="_cancel"></image>
 			</view>
-			<!-- <view class="prompt-text">{{text}}</view> -->
+			<view style="margin-top: 20rpx;">
+				初值
+			</view>
 			<view class="form">
 				<input type="number" class="prompt-input" @input="_input" :value="cost" />
 				<view class="img-box">
 					<image src="../static/up.svg" class="form-img up" @tap="add"></image>
 					<image src='../static/down.svg' class="form-img down" @tap="incre"></image>
+				</view>
+			</view>
+			<view class="">
+				梯度
+			</view>
+			<view class="form">
+				<input type="number" class="prompt-input" @input="_input2" :value="cost2" />
+				<view class="img-box">
+					<image src="../static/up.svg" class="form-img up" @tap="add2"></image>
+					<image src='../static/down.svg' class="form-img down" @tap="incre2"></image>
 				</view>
 			</view>
 			<button class="prompt-certain-btn" @tap="_confirm">{{btn_certain}}</button>
@@ -27,7 +39,8 @@
 			return {
 				multipleSlots: true, // 在组件定义时的选项中启用多slot支持
 				isHidden: true,
-				cost: 0
+				cost: 0,
+				cost2: 0,
 			};
 		},
 		props: {
@@ -47,9 +60,6 @@
 				type: String,
 				default: '',
 			}
-		},
-		watch: {
-			
 		},
 		methods: {
 
@@ -76,6 +86,20 @@
 					}
 				}
 			},
+			add2() {
+				if (this.isNum(this.cost2)) {
+					this.cost2 = Number(this.cost2) + 1
+				}else{
+					this.cost2 = 0
+				}
+			},
+			incre2() {
+				if (this.isNum(this.cost2) == 2) {
+					if(this.cost2 - 1 >= 0){
+						this.cost2 = Number(this.cost2) - 1
+					}
+				}
+			},
 			hide: function() {
 				this.isHidden = true;
 			},
@@ -97,13 +121,18 @@
 			},
 			_confirm() {
 				//this.triggerEvent("confirm");
-				this.$emit('onConfirm', this.cost);
+				this.$emit('onConfirm', this.cost,this.cost2);
 				// this.cost = '';
 			},
 			_input(e) {
 				//将参数传出去，这样在getInput函数中可以通过e去获得必要的参数
 				//this.triggerEvent("getInput",e.detail);
 				this.cost = e.detail.value;
+			},
+			_input2(e) {
+				//将参数传出去，这样在getInput函数中可以通过e去获得必要的参数
+				//this.triggerEvent("getInput",e.detail);
+				this.cost2 = e.detail.value;
 			}
 		}
 	}

@@ -20,7 +20,7 @@
 			"windowHeight": 572,
 			"imgInfo": {
 				"errMsg": "getImageInfo:ok",
-				"path": "file:///storage/emulated/0/Pictures/QQ/8F220CCC495B2FEA48E2C01FC77EF4D6(1).jpg",
+				"path": "file:///storage/emulated/0/Pictures/QQ/8F220CCC495B2FEA48E2C01FC77EF4D6.jpg",
 				"width": 720,
 				"height": 960,
 				"orientation": "up",
