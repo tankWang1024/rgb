@@ -46,6 +46,8 @@
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
 
+			this.ctx.setFontSize(32)
+			
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
 			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
 
@@ -97,20 +99,16 @@
 				this.ctx.setStrokeStyle('red')
 				this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
 				this.ctx.draw()
-				// for (let item of this.rect) {	// 性能太差
-				// 	this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-				// 	this.ctx.draw(true)
-				// }
 			},
 			endArt(e) {
 				this.endx = Math.round(e.changedTouches[0].x)
 				this.endy = Math.round(e.changedTouches[0].y)
-				if(this.startx > this.endx){
+				if (this.startx > this.endx) {
 					let temp = this.startx
 					this.startx = this.endx
 					this.endx = temp
 				}
-				if(this.starty > this.endy){
+				if (this.starty > this.endy) {
 					let temp = this.starty
 					this.starty = this.endy
 					this.endy = temp
@@ -122,14 +120,17 @@
 					endy: this.endy
 				})
 				this.ctx.closePath()
-				this.ctx.draw()
-				for (let item of this.rect) {
+				this.ctx.draw();
+				for (let i = 0; i < this.rect.length; i++) {
 					this.ctx.setStrokeStyle('red')
-					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+					this.ctx.setFillStyle('red')
+					this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[i]
+						.endy - this.rect[i].starty)
+					this.ctx.fillText(i+1, this.rect[i].endx, this.rect[i].starty) // 序号
 					this.ctx.draw(true)
 				}
 				this.getRGB()
-				
+
 
 			},
 			cancelArt() {

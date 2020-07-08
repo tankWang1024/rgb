@@ -47,17 +47,6 @@
 				lineb: 0,
 				// yName:'',
 				option: {
-					// title: {
-					// 	text: '',
-					// 	textAlign: 'left',
-					// 	textStyle: {
-					// 		fontSize: 20,
-					// 	},
-					// 	// subText: '富文本标题',
-					// 	// subtextStyle: {
-					// 	// 	align:'right'
-					// 	// }
-					// },
 					label: {
 						formatter: '',
 						align: 'right'
@@ -213,6 +202,7 @@
 		},
 		onLoad(options) {
 			// _self = this;
+			options.y = 'R'
 			app.globalData.yName = options.y
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight

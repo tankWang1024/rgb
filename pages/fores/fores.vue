@@ -4,6 +4,9 @@
 			<view class="rect">
 				图片
 			</view>
+			<view class="num">
+				序号
+			</view>
 			<view class="rgb">
 				<text>{{interText}}</text>
 			</view>
@@ -14,6 +17,9 @@
 		<view v-for="(item,index) in rect" class="box">
 			<view class="canWarp">
 				<canvas :canvas-id="index+'c'" v-bind:style="{width:'60px',height:'50px'}"></canvas>
+			</view>
+			<view class="num">
+				{{index+1}}
 			</view>
 			<view class="rgb">
 				<text>{{inter[index].toFixed(4)}}</text>
