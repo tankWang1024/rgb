@@ -202,7 +202,6 @@
 		},
 		onLoad(options) {
 			// _self = this;
-			options.y = 'R'
 			app.globalData.yName = options.y
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight

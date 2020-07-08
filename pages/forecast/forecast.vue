@@ -4,7 +4,7 @@
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
 		<view class="btn-box">
-			<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
+			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
 			<button type="default" @tap="getForecast" class="btn">去预测</button>
 		</view>
 	</view>
@@ -46,7 +46,7 @@
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
 			this.ctx.setFontSize(32)
-			
+
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
 			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
 
@@ -57,9 +57,13 @@
 					this.rect.splice(this.rect.length - 1, 1);
 					this.rgbArr.splice(this.rgbArr.length - 1, 1);
 					this.ctx.draw()
-					for (let item of this.rect) {
+					for (let i = 0; i < this.rect.length; i++) {
 						this.ctx.setStrokeStyle('red')
-						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+						this.ctx.setFillStyle('red')
+						this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
+								i]
+							.endy - this.rect[i].starty)
+						this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
 						this.ctx.draw(true)
 					}
 				}
@@ -125,7 +129,7 @@
 					this.ctx.setFillStyle('red')
 					this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[i]
 						.endy - this.rect[i].starty)
-					this.ctx.fillText(i+1, this.rect[i].endx, this.rect[i].starty) // 序号
+					this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
 					this.ctx.draw(true)
 				}
 				this.getRGB()

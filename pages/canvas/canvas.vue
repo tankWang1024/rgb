@@ -3,7 +3,7 @@
 		<canvas canvas-id="myCanvas" id="myCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}" @touchstart="startArt"
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
-		<image class="btn-img" src="../../static/last.svg" @tap="revoke"></image>
+		<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
 		<view class="btn-box">
 			<button type="default" @tap="changeGradient" class="btn gradient">{{gradientState}}</button>
 			<button type="default" @tap="getRes" class="btn">确定</button>
