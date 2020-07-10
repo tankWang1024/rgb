@@ -58,8 +58,9 @@
 			this.c_width = app.globalData.windowWidth
 			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo
+			
 			this.ctx = uni.createCanvasContext('myCanvas')
-
+			
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
 			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
 

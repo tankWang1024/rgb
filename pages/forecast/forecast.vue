@@ -7,19 +7,21 @@
 			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
 			<button type="default" @tap="getForecast" class="btn">去预测</button>
 		</view>
+		<prompt ref="prompt" @onConfirm="onConfirm" title="命名" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
 	</view>
 </template>
 
 <script>
 	import app from '../../App.vue'
-
+	import prompt from '../../components/prompt3.vue'
+	
 	import {
 		dataGet
 	} from '../../common/utils.js'
-
+	var title = ""
 	export default {
 		components: {
-
+prompt
 		},
 		data() {
 			return {
@@ -35,10 +37,12 @@
 				rect: [],
 				rgbArr: [],
 				MIC: [],
+				promptVal:"",
 			}
 		},
 		onReady() {
 			this.rgbctx.draw()
+			this.$refs.prompt.show();
 		},
 		onLoad() {
 			this.c_width = app.globalData.windowWidth
@@ -52,6 +56,10 @@
 
 		},
 		methods: {
+			onConfirm(e){
+					title = e;
+					this.$refs.prompt.hide();
+			},
 			revoke() { // 撤销
 				if (this.rect.length >= 1) {
 					this.rect.splice(this.rect.length - 1, 1);
@@ -72,7 +80,7 @@
 				app.globalData.rgbArr2 = this.rgbArr
 				app.globalData.rect2 = this.rect
 				uni.navigateTo({
-					url: '../fores/fores'
+					url: '../fores/fores?title=' + title
 				})
 			},
 			getRGB() {

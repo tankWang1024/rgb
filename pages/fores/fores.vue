@@ -52,7 +52,10 @@
 				item.draw()
 			}
 		},
-		onLoad() {
+		onLoad(options) {
+			uni.setNavigationBarTitle({
+				title:options.title
+			})
 			this.rgbArr = app.globalData.rgbArr2;
 			this.rect = app.globalData.rect2
 			this.imgInfo = app.globalData.imgInfo2

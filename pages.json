@@ -1,30 +1,30 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/chart/chart",
+			"style": {
+				"navigationBarTitleText": "关系曲线"
+			}
+		}, {
+			"path": "pages/forecast/forecast",
+			"style": {
+				"navigationBarTitleText": "圈画预测区域"
+			}
+		}, {
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
-		},{
+		}, {
 			"path": "pages/canvas/canvas",
 			"style": {
 				"navigationBarTitleText": "圈画图片"
-			}
-		},{
-			"path": "pages/chart/chart",
-			"style": {
-				"navigationBarTitleText": "关系曲线"
 			}
 		},
 		{
 			"path": "pages/res/res",
 			"style": {
 				"navigationBarTitleText": "结果"
-			}
-		},  {
-			"path": "pages/forecast/forecast",
-			"style": {
-				"navigationBarTitleText": "圈画预测区域"
 			}
 		}, {
 			"path": "pages/fores/fores",
@@ -39,14 +39,12 @@
 		"navigationBarBackgroundColor": "#000000",
 		"backgroundColor": "#000000"
 	},
-	"condition" : { //模式配置，仅开发期间生效
+	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
-		"list": [
-			{
-				"name": "", //模式名称
-				"path": "", //启动页面，必选
-				"query": "" //启动参数，在页面的onLoad函数里面得到
-			}
-		]
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
 	}
 }
