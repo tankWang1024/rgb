@@ -16,7 +16,8 @@
 	import prompt from '../../components/prompt3.vue'
 	
 	import {
-		dataGet
+		dataGet,
+		rotateImg
 	} from '../../common/utils.js'
 	var title = ""
 	export default {
@@ -49,10 +50,10 @@ prompt
 			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
-			this.ctx.setFontSize(32)
+			this.ctx.setFontSize(26)
 
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
-			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
+			rotateImg(this)
 
 		},
 		methods: {
@@ -141,8 +142,6 @@ prompt
 					this.ctx.draw(true)
 				}
 				this.getRGB()
-
-
 			},
 			cancelArt() {
 				console.log('cancel')

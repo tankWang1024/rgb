@@ -19,7 +19,7 @@
 		</view>
 		<view class="content">
 			<!-- #ifdef APP-PLUS || H5 -->
-			<view @click="echarts.onClick" :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts"
+			<view :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts"
 			 v-bind:style="{width:windowWidth+'px',height:'400px'}"></view>
 			<!-- #endif -->
 			<!-- #ifndef APP-PLUS || H5 -->
@@ -99,11 +99,6 @@
 			}
 		},
 		methods: {
-
-			onViewClick(options) {
-				console.log(options)
-			},
-
 			toForecast() {
 				uni.chooseImage({
 					count: 1,

@@ -114,17 +114,29 @@
 					}
 					break;
 			}
-
-			let windowHeight = app.globalData.windowHeight
-			let windowWidth = app.globalData.windowWidth
-			for (let i = 0; i < this.rect.length; i++) {
-				this.ctxn[i] = uni.createCanvasContext(i + 'c')
-				// 放大系数
-				let we = 50 / (Math.abs(this.rect[i].startx - this.rect[i].endx))
-				let he = 60 / (Math.abs(this.rect[i].starty - this.rect[i].endy))
-				this.ctxn[i].drawImage(this.imgInfo.path, -this.rect[i].startx * we, -this.rect[i].starty * he, windowWidth * we, (
-					windowHeight - 100) * he)
+			let c_height = app.globalData.windowHeight - 100
+			let c_width = app.globalData.windowWidth
+			if(this.imgInfo.width < this.imgInfo.height){
+				for (let i = 0; i < this.rect.length; i++) {
+					this.ctxn[i] = uni.createCanvasContext(i + 'c')
+					// 放大系数
+					let we = 50 / (Math.abs(this.rect[i].startx - this.rect[i].endx))
+					let he = 60 / (Math.abs(this.rect[i].starty - this.rect[i].endy))
+					this.ctxn[i].drawImage(this.imgInfo.path, -this.rect[i].startx * we, -this.rect[i].starty * he, c_width * we, c_height * he)
+				}
+			}else {	// 旋转图片
+				for (let i = 0; i < this.rect.length; i++) {
+					this.ctxn[i] = uni.createCanvasContext(i + 'c')
+					// 放大系数
+					let xe = 50 / (Math.abs(this.rect[i].starty - this.rect[i].endy))
+					let ye = 60 / (Math.abs(this.rect[i].startx - this.rect[i].endx))
+					this.ctxn[i].rotate(Math.PI / 2)
+					this.ctxn[i].translate(0, -60)
+					this.ctxn[i].scale(xe,ye)
+					this.ctxn[i].drawImage(this.imgInfo.path,-this.rect[i].starty,this.rect[i].endx -c_width, c_height, c_width)
+				}
 			}
+			
 		}
 	}
 </script>

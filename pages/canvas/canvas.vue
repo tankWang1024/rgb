@@ -20,7 +20,8 @@
 	import prompt2 from '../../components/prompt2.vue'
 
 	import {
-		dataGet
+		dataGet,
+		rotateImg
 	} from '../../common/utils.js'
 
 	export default {
@@ -58,24 +59,25 @@
 			this.c_width = app.globalData.windowWidth
 			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo
-			
-			this.ctx = uni.createCanvasContext('myCanvas')
-			
-			this.rgbctx = uni.createCanvasContext('rgbCanvas')
-			this.rgbctx.drawImage(this.imgInfo.path, 0, 0, app.globalData.windowWidth, this.c_height)
 
+			this.ctx = uni.createCanvasContext('myCanvas')
+			this.rgbctx = uni.createCanvasContext('rgbCanvas')
+			rotateImg(this)		// 是否旋转图片
+		},
+		onBackPress() {
+			console.log('返回')
 		},
 		watch: {},
 		methods: {
 			changeGradient() {
 				this.gradientFlag = !this.gradientFlag
 				if (this.gradientFlag) { // 开启
-				
+
 
 				} else { // 关闭
 					let count = this.rect.length - this.MIC.length
 					console.log('矩形' + count)
-					if(count){
+					if (count) {
 						this.$refs.prompt2.show()
 					}
 				}
@@ -83,36 +85,35 @@
 
 			revoke() { // 撤销
 				if (this.rect.length >= 1) {
-					console.log(this.rgbArr.length,this.MIC.length,this.rect.length)
+					console.log(this.rgbArr.length, this.MIC.length, this.rect.length)
 					if (this.MIC.length == this.rect.length) { // 开启梯度再撤销时，浓度数量跟矩形一样就一起撤销
 						this.MIC.splice(this.MIC.length - 1, 1);
 						this.rgbArr.splice(this.rgbArr.length - 1, 1);
 						console.log('同时撤销了浓度值')
 					}
 					this.rect.splice(this.rect.length - 1, 1);
-					
+
 					this.ctx.draw()
 					for (let item of this.rect) {
 						this.ctx.setStrokeStyle('red')
 						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 						this.ctx.draw(true)
 					}
-				} else {
-				}
+				} else {}
 
 			},
 			getRes() {
-				if(this.MIC.length == this.rect.length){
+				if (this.MIC.length == this.rect.length) {
 					app.globalData.MIC = this.MIC;
 					app.globalData.rgbArr = this.rgbArr
 					app.globalData.rect = this.rect
 					uni.navigateTo({
 						url: '../res/res'
 					})
-				}else{
+				} else {
 					this.$refs.prompt2.show()
 				}
-				
+
 			},
 			getRGB() {
 				let that = this;

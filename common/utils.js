@@ -20,9 +20,31 @@ export const dataGet = function(arr) {
 	}
 }
 
-export const getMinDis = function(arr){
-	let minDistance = Math.abs(arr[0] - arr[1])
-	for(let i=0; i<arr.length; i++){
-		
+export const rotateImg = function(_this) { // this:{imgInfo:{width,height,path},c_width,c_height,rgbctx}
+	let imgw = _this.c_height
+	let imgh = _this.c_width
+	if (_this.imgInfo.width < _this.imgInfo.height) {
+		console.log('竖屏')
+		_this.rgbctx.drawImage(_this.imgInfo.path, 0, 0, _this.imgInfo.width, _this.imgInfo.height, 0, 0, _this.c_width,
+			_this.c_height)
+	} else {
+		_this.rgbctx.save()
+		console.log('横屏')
+		_this.rgbctx.translate(_this.c_width, 0)
+		_this.rgbctx.rotate(Math.PI / 2)
+		uni.getImageInfo({
+			src: _this.imgInfo.path,
+			success() {
+				_this.rgbctx.drawImage(_this.imgInfo.path, 0, 0, _this.imgInfo.width, _this.imgInfo.height, 0,
+					0, imgw, imgh)
+				// 恢复canvas(0,0)原点
+				_this.rgbctx.restore()
+			}
+		})
 	}
+	return _this
+}
+
+export const showRotateImgs = function(_this) {
+
 }
