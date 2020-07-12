@@ -270,32 +270,41 @@ var render = function() {
                 return _vm.$handleViewEvent($event)
               }
             }
+          }),
+          _c("v-uni-image", {
+            staticClass: _vm._$g(6, "sc"),
+            attrs: { src: _vm._$g(6, "a-src"), _i: 6 },
+            on: {
+              click: function($event) {
+                return _vm.$handleViewEvent($event)
+              }
+            }
           })
         ],
         1
       ),
       _c(
         "v-uni-view",
-        { staticClass: _vm._$g(6, "sc"), attrs: { _i: 6 } },
+        { staticClass: _vm._$g(7, "sc"), attrs: { _i: 7 } },
         [
           _c(
             "v-uni-button",
             {
-              staticClass: _vm._$g(7, "sc"),
-              attrs: { type: "default", _i: 7 },
+              staticClass: _vm._$g(8, "sc"),
+              attrs: { type: "default", _i: 8 },
               on: {
                 click: function($event) {
                   return _vm.$handleViewEvent($event)
                 }
               }
             },
-            [_vm._v(_vm._$g(7, "t0-0"))]
+            [_vm._v(_vm._$g(8, "t0-0"))]
           ),
           _c(
             "v-uni-button",
             {
-              staticClass: _vm._$g(8, "sc"),
-              attrs: { type: "default", _i: 8 },
+              staticClass: _vm._$g(9, "sc"),
+              attrs: { type: "default", _i: 9 },
               on: {
                 click: function($event) {
                   return _vm.$handleViewEvent($event)
@@ -309,8 +318,8 @@ var render = function() {
       ),
       _c("prompt", {
         ref: "prompt",
-        style: _vm._$g(9, "s"),
-        attrs: { _i: 9 },
+        style: _vm._$g(10, "s"),
+        attrs: { _i: 10 },
         on: {
           onConfirm: function($event) {
             return _vm.$handleViewEvent($event)
@@ -322,8 +331,8 @@ var render = function() {
       }),
       _c("prompt2", {
         ref: "prompt2",
-        style: _vm._$g(10, "s"),
-        attrs: { _i: 10 },
+        style: _vm._$g(11, "s"),
+        attrs: { _i: 11 },
         on: {
           onConfirm: function($event) {
             return _vm.$handleViewEvent($event)
@@ -2575,11 +2584,20 @@ var render = function() {
               }
             }
           }),
+          _c("v-uni-image", {
+            staticClass: _vm._$g(6, "sc"),
+            attrs: { src: _vm._$g(6, "a-src"), _i: 6 },
+            on: {
+              click: function($event) {
+                return _vm.$handleViewEvent($event)
+              }
+            }
+          }),
           _c(
             "v-uni-button",
             {
-              staticClass: _vm._$g(6, "sc"),
-              attrs: { type: "default", _i: 6 },
+              staticClass: _vm._$g(7, "sc"),
+              attrs: { type: "default", _i: 7 },
               on: {
                 click: function($event) {
                   return _vm.$handleViewEvent($event)
@@ -2593,8 +2611,8 @@ var render = function() {
       ),
       _c("prompt", {
         ref: "prompt",
-        style: _vm._$g(7, "s"),
-        attrs: { _i: 7 },
+        style: _vm._$g(8, "s"),
+        attrs: { _i: 8 },
         on: {
           onConfirm: function($event) {
             return _vm.$handleViewEvent($event)

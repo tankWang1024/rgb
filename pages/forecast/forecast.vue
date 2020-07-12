@@ -4,6 +4,7 @@
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
 		<view class="btn-box">
+			<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'" @tap="copyRect"></image>
 			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
 			<image class="btn-img" :src="rect.length?'../../static/move.svg':'../../static/move2.svg'" @tap="changeMove"></image>
 			<button type="default" @tap="getForecast" class="btn">去预测</button>
@@ -61,6 +62,23 @@
 
 		},
 		methods: {
+			copyRect() {
+				if (this.rect.length) {
+					console.log('复制第一个矩形')
+					this.rect.push({
+						startx: this.rect[0].startx + 10,
+						starty: this.rect[0].starty + 10,
+						endx: this.rect[0].endx + 10,
+						endy: this.rect[0].endy + 10
+					})
+					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
+						this.rect[0].endy - this.rect[0].starty)
+						this.ctx.draw(true)
+						this.getRGB()
+				} else {
+					return
+				}
+			},
 			changeMove() {
 				if (this.rect.length) {
 					console.log('change')
@@ -70,15 +88,20 @@
 			startArt(e) {
 				if (this.moveFlag) {
 					if (this.rect.length) {
+						let disx = this.c_width
+						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
 							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
 								Math.round(e.touches[0].x) < this.rect[i].endx &&
 								Math.round(e.touches[0].y) > this.rect[i].starty &&
 								Math.round(e.touches[0].y) < this.rect[i].endy) {
-								this.movingIndex = i;
-								this.moveStartx = Math.round(e.touches[0].x)
-								this.moveStarty = Math.round(e.touches[0].y)
-								break;
+								let x = e.touches[0].x - this.rect[i].startx
+								let y = e.touches[0].y - this.rect[i].startx
+								if(x<=disx && y<=disy){
+									this.movingIndex = i;
+									this.moveStartx = Math.round(e.touches[0].x)
+									this.moveStarty = Math.round(e.touches[0].y)
+								}
 							}
 						}
 					}else{

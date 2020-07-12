@@ -4,6 +4,7 @@
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
 		<view class="toolbar">
+			<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'" @tap="copyRect"></image>
 			<image class="btn-img" :src="rect.length?'../../static/move.svg':'../../static/move2.svg'" @tap="changeMove"></image>
 			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
 		</view>
@@ -73,31 +74,56 @@
 			rotateImg(this) // 是否旋转图片
 		},
 		methods: {
-			changeMove() {
+			copyRect() {
 				if (this.rect.length) {
-					console.log('change')
-					this.moveFlag = !this.moveFlag
+					console.log('复制第一个矩形')
+					this.rect.push({
+						startx: this.rect[0].startx + 10,
+						starty: this.rect[0].starty + 10,
+						endx: this.rect[0].endx + 10,
+						endy: this.rect[0].endy + 10
+					})
+					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
+						this.rect[0].endy - this.rect[0].starty)
+						this.ctx.draw(true)
+					if(!this.gradientFlag){	// 梯度状态下先不输入浓度
+						this.$refs.prompt.show()
+					}
+				} else {
+					return
 				}
+
+			},
+			changeMove() {
+				console.log('change')
+				this.moveFlag = !this.moveFlag
 			},
 			startArt(e) {
 				if (this.moveFlag) {
-					if(this.rect.length){
+					if (this.rect.length) {
+						let disx = this.c_width
+						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
 							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
 								Math.round(e.touches[0].x) < this.rect[i].endx &&
 								Math.round(e.touches[0].y) > this.rect[i].starty &&
 								Math.round(e.touches[0].y) < this.rect[i].endy) {
-								this.movingIndex = i;
-								this.moveStartx = Math.round(e.touches[0].x)
-								this.moveStarty = Math.round(e.touches[0].y)
-								break;
+								let x = e.touches[0].x - this.rect[i].startx
+								let y = e.touches[0].y - this.rect[i].startx
+								if(x<=disx && y<=disy){
+									disx = x
+									disy = y
+									this.movingIndex = i;
+									this.moveStartx = Math.round(e.touches[0].x)
+									this.moveStarty = Math.round(e.touches[0].y)
+								}
 							}
 						}
-					}else{
+					} else {
 						console.log('无矩形可以移动')
 						return
 					}
-					
+
 				} else {
 					this.startx = Math.round(e.touches[0].x)
 					this.starty = Math.round(e.touches[0].y)
@@ -106,7 +132,7 @@
 			moveArt(e) {
 				this.ctx.setStrokeStyle('red')
 				if (this.moveFlag) {
-					if(this.movingIndex >= 0){
+					if (this.movingIndex >= 0) {
 						let endx = Math.round(e.touches[0].x)
 						let endy = Math.round(e.touches[0].y)
 						let disX = endx - this.moveStartx
@@ -116,10 +142,10 @@
 						this.ctx.strokeRect(this.rect[this.movingIndex].startx + disX, this.rect[this.movingIndex].starty + disY, width,
 							height)
 						console.log('移动')
-					}else{
+					} else {
 						return
 					}
-					
+
 				} else {
 					this.endx = Math.round(e.touches[0].x)
 					this.endy = Math.round(e.touches[0].y)
@@ -129,12 +155,12 @@
 			},
 			endArt(e) {
 				if (this.moveFlag) {
-					if(this.movingIndex >= 0){
+					if (this.movingIndex >= 0) {
 						let endx = Math.round(e.changedTouches[0].x)
 						let endy = Math.round(e.changedTouches[0].y)
 						let disX = endx - this.moveStartx
 						let disY = endy - this.moveStarty
-						
+
 						this.rect[this.movingIndex] = {
 							startx: this.rect[this.movingIndex].startx + disX,
 							starty: this.rect[this.movingIndex].starty + disY,
@@ -147,14 +173,13 @@
 							this.ctx.draw(true)
 						}
 						this.movingIndex = -1;
-					}else{
+					} else {
 						return
 					}
-					
+
 				} else {
 					this.endx = Math.round(e.changedTouches[0].x)
 					this.endy = Math.round(e.changedTouches[0].y)
-
 					this.ctx.closePath()
 					if (this.startx > this.endx) {
 						let temp = this.startx
