@@ -3,7 +3,11 @@
 		<canvas canvas-id="myCanvas" id="myCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}" @touchstart="startArt"
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
-		<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
+		<view class="toolbar">
+			<image class="btn-img" :src="rect.length?'../../static/move.svg':'../../static/move2.svg'" @tap="changeMove"></image>
+			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
+		</view>
+
 		<view class="btn-box">
 			<button type="default" @tap="changeGradient" class="btn gradient">{{gradientState}}</button>
 			<button type="default" @tap="getRes" class="btn">确定</button>
@@ -32,6 +36,10 @@
 		data() {
 			return {
 				gradientFlag: false,
+				moveFlag: false,
+				movingIndex: -1,
+				moveStartx: '',
+				moveStarty: '',
 				imgInfo: {},
 				ctx: null,
 				rgbctx: null,
@@ -62,13 +70,120 @@
 
 			this.ctx = uni.createCanvasContext('myCanvas')
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
-			rotateImg(this)		// 是否旋转图片
+			rotateImg(this) // 是否旋转图片
 		},
-		onBackPress() {
-			console.log('返回')
-		},
-		watch: {},
 		methods: {
+			changeMove() {
+				if (this.rect.length) {
+					console.log('change')
+					this.moveFlag = !this.moveFlag
+				}
+			},
+			startArt(e) {
+				if (this.moveFlag) {
+					if(this.rect.length){
+						for (let i = 0; i < this.rect.length; i++) {
+							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
+								Math.round(e.touches[0].x) < this.rect[i].endx &&
+								Math.round(e.touches[0].y) > this.rect[i].starty &&
+								Math.round(e.touches[0].y) < this.rect[i].endy) {
+								this.movingIndex = i;
+								this.moveStartx = Math.round(e.touches[0].x)
+								this.moveStarty = Math.round(e.touches[0].y)
+								break;
+							}
+						}
+					}else{
+						console.log('无矩形可以移动')
+						return
+					}
+					
+				} else {
+					this.startx = Math.round(e.touches[0].x)
+					this.starty = Math.round(e.touches[0].y)
+				}
+			},
+			moveArt(e) {
+				this.ctx.setStrokeStyle('red')
+				if (this.moveFlag) {
+					if(this.movingIndex >= 0){
+						let endx = Math.round(e.touches[0].x)
+						let endy = Math.round(e.touches[0].y)
+						let disX = endx - this.moveStartx
+						let disY = endy - this.moveStarty
+						let width = this.rect[this.movingIndex].endx - this.rect[this.movingIndex].startx
+						let height = this.rect[this.movingIndex].endy - this.rect[this.movingIndex].starty
+						this.ctx.strokeRect(this.rect[this.movingIndex].startx + disX, this.rect[this.movingIndex].starty + disY, width,
+							height)
+						console.log('移动')
+					}else{
+						return
+					}
+					
+				} else {
+					this.endx = Math.round(e.touches[0].x)
+					this.endy = Math.round(e.touches[0].y)
+					this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
+				}
+				this.ctx.draw()
+			},
+			endArt(e) {
+				if (this.moveFlag) {
+					if(this.movingIndex >= 0){
+						let endx = Math.round(e.changedTouches[0].x)
+						let endy = Math.round(e.changedTouches[0].y)
+						let disX = endx - this.moveStartx
+						let disY = endy - this.moveStarty
+						
+						this.rect[this.movingIndex] = {
+							startx: this.rect[this.movingIndex].startx + disX,
+							starty: this.rect[this.movingIndex].starty + disY,
+							endx: this.rect[this.movingIndex].endx + disX,
+							endy: this.rect[this.movingIndex].endy + disY
+						}
+						for (let item of this.rect) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+							this.ctx.draw(true)
+						}
+						this.movingIndex = -1;
+					}else{
+						return
+					}
+					
+				} else {
+					this.endx = Math.round(e.changedTouches[0].x)
+					this.endy = Math.round(e.changedTouches[0].y)
+
+					this.ctx.closePath()
+					if (this.startx > this.endx) {
+						let temp = this.startx
+						this.startx = this.endx
+						this.endx = temp
+					}
+					if (this.starty > this.endy) {
+						let temp = this.starty
+						this.starty = this.endy
+						this.endy = temp
+					}
+					this.rect.push({
+						startx: this.startx,
+						starty: this.starty,
+						endx: this.endx,
+						endy: this.endy
+					})
+					this.ctx.draw()
+					for (let item of this.rect) {
+						this.ctx.setStrokeStyle('red')
+						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+						this.ctx.draw(true)
+					}
+					if (!this.gradientFlag) {
+						// 非梯度状态，填这次绘制区域的浓度
+						this.$refs.prompt.show();
+					}
+				}
+			},
 			changeGradient() {
 				this.gradientFlag = !this.gradientFlag
 				if (this.gradientFlag) { // 开启
@@ -107,6 +222,7 @@
 					app.globalData.MIC = this.MIC;
 					app.globalData.rgbArr = this.rgbArr
 					app.globalData.rect = this.rect
+					// console.log(app.globalData.rect)
 					uni.navigateTo({
 						url: '../res/res'
 					})
@@ -135,49 +251,6 @@
 						console.log(err)
 					}
 				}, that)
-			},
-			startArt(e) {
-				this.startx = Math.round(e.touches[0].x)
-				this.starty = Math.round(e.touches[0].y)
-			},
-			moveArt(e) {
-				this.endx = Math.round(e.touches[0].x)
-				this.endy = Math.round(e.touches[0].y)
-				this.ctx.setStrokeStyle('red')
-				this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
-				this.ctx.draw()
-			},
-			endArt(e) {
-				this.endx = Math.round(e.changedTouches[0].x)
-				this.endy = Math.round(e.changedTouches[0].y)
-
-				this.ctx.closePath()
-				if (this.startx > this.endx) {
-					let temp = this.startx
-					this.startx = this.endx
-					this.endx = temp
-				}
-				if (this.starty > this.endy) {
-					let temp = this.starty
-					this.starty = this.endy
-					this.endy = temp
-				}
-				this.rect.push({
-					startx: this.startx,
-					starty: this.starty,
-					endx: this.endx,
-					endy: this.endy
-				})
-				this.ctx.draw()
-				for (let item of this.rect) {
-					this.ctx.setStrokeStyle('red')
-					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-					this.ctx.draw(true)
-				}
-				if (!this.gradientFlag) {
-					// 非梯度状态，填这次绘制区域的浓度
-					this.$refs.prompt.show();
-				}
 			},
 			cancelArt() {
 				console.log('cancel')
@@ -276,13 +349,20 @@
 		justify-content: space-between;
 	}
 
+	.toolbar {
+		width: 80%;
+		height: 80px;
+		position: absolute;
+		right: 10%;
+		bottom: 40px;
+		display: flex;
+
+	}
+
 	.btn-img {
 		width: 100rpx;
 		height: 80rpx;
-		margin-right: 20rpx;
-		position: absolute;
-		right: 10%;
-		bottom: 90px;
+		flex: 1;
 	}
 
 	.btn-box .btn {
