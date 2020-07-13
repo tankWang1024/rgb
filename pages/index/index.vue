@@ -37,6 +37,7 @@
 						uni.getImageInfo({
 							src: tempFilePath,
 							success(res) {
+								console.log(res)
 								app.globalData.imgInfo = res
 								uni.navigateTo({
 									url: '../canvas/canvas'

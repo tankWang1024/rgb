@@ -4,17 +4,25 @@
 		 @touchmove="moveArt" @touchcancel="cancelArt" @touchend="endArt"></canvas>
 		<canvas canvas-id="rgbCanvas" id="rgbCanvas" v-bind:style="{width:c_width+'px',height:c_height+'px'}"></canvas>
 		<view class="toolbar">
-			<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'" @tap="copyRect"></image>
-			<image class="btn-img" :src="rect.length?'../../static/move.svg':'../../static/move2.svg'" @tap="changeMove"></image>
-			<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'" @tap="revoke"></image>
+			<view class="toolbar-item" @tap="copyRect">
+				<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'"></image>
+				<text class="toolbar-text" :class="{'active-text':rect.length}">复制</text>
+			</view>
+			<view class="toolbar-item"  @tap="changeMove">
+				<image class="btn-img" :src="moveFlag?'../../static/move.svg':'../../static/move2.svg'"></image>
+				<text class="toolbar-text" :class="{'activate':moveFlag}">移动</text>
+			</view>
+			<view class="toolbar-item" @tap="revoke">
+				<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'"></image>
+				<text class="toolbar-text" :class="{'active-text':rect.length}">撤销</text>
+			</view>
 		</view>
-
 		<view class="btn-box">
 			<button type="default" @tap="changeGradient" class="btn gradient">{{gradientState}}</button>
 			<button type="default" @tap="getRes" class="btn">确定</button>
 		</view>
-		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt>
-		<prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消" v-bind:style="{width:c_width+'px',height:(c_height+100)+'px'}"></prompt2>
+		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消"></prompt>
+		<prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消"></prompt2>
 	</view>
 </template>
 
@@ -66,7 +74,7 @@
 		},
 		onLoad() {
 			this.c_width = app.globalData.windowWidth
-			this.c_height = app.globalData.windowHeight - 100
+			this.c_height = app.globalData.windowHeight - 130
 			this.imgInfo = app.globalData.imgInfo
 
 			this.ctx = uni.createCanvasContext('myCanvas')
@@ -85,8 +93,8 @@
 					})
 					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
 						this.rect[0].endy - this.rect[0].starty)
-						this.ctx.draw(true)
-					if(!this.gradientFlag){	// 梯度状态下先不输入浓度
+					this.ctx.draw(true)
+					if (!this.gradientFlag) { // 梯度状态下先不输入浓度
 						this.$refs.prompt.show()
 					}
 				} else {
@@ -109,8 +117,8 @@
 								Math.round(e.touches[0].y) > this.rect[i].starty &&
 								Math.round(e.touches[0].y) < this.rect[i].endy) {
 								let x = e.touches[0].x - this.rect[i].startx
-								let y = e.touches[0].y - this.rect[i].startx
-								if(x<=disx && y<=disy){
+								let y = e.touches[0].y - this.rect[i].starty
+								if (x <= disx && y <= disy) {
 									disx = x
 									disy = y
 									this.movingIndex = i;
@@ -347,6 +355,7 @@
 <style>
 	.box {
 		position: relative;
+		height: 100%;
 		background-color: #000000;
 		z-index: 0;
 	}
@@ -367,7 +376,7 @@
 
 	.btn-box {
 		width: 80%;
-		height: 100px;
+		height: 70px;
 		margin: 0 auto;
 		display: flex;
 		align-items: center;
@@ -376,23 +385,57 @@
 
 	.toolbar {
 		width: 80%;
-		height: 80px;
-		position: absolute;
-		right: 10%;
-		bottom: 40px;
+		height: 60px;
+		margin: 0 auto;
 		display: flex;
-
+		align-items: center;
+		justify-content: space-between;
 	}
 
+	.toolbar-item {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		font-size: 10px;
+		padding: 0 10px;
+	}
+
+	.toolbar-item:nth-of-type(1) {
+		align-items: flex-start;
+		margin-left: -10px;
+	}
+
+	.toolbar-item:nth-of-type(2) {
+		align-items: center;
+	}
+
+	.toolbar-item:nth-of-type(3) {
+		align-items: flex-end;
+		margin-right: -10px;
+	}
+
+	.toolbar-text {
+		margin-top: 4px;
+		width: 40px;
+		text-align: center;
+		color: #8a8a8a;
+	}
+
+	.active-text{
+		color: #FFFFFF;
+	}
+	.activate{
+		color: rgb(255, 196, 62);
+	}
 	.btn-img {
-		width: 100rpx;
-		height: 80rpx;
-		flex: 1;
+		width: 50px;
+		height: 40px;
 	}
 
 	.btn-box .btn {
-		height: 80rpx;
-		line-height: 80rpx;
+		height: 40px;
+		line-height: 40px;
 		background-color: rgb(255, 196, 62);
 		margin: 0;
 	}

@@ -79,7 +79,7 @@
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
 			this.imgInfo = app.globalData.imgInfo
-			let c_height = app.globalData.windowHeight - 100
+			let c_height = app.globalData.windowHeight - 130
 			let c_width = app.globalData.windowWidth
 
 			if (this.imgInfo.width < this.imgInfo.height) {
@@ -92,6 +92,7 @@
 						c_height * he)
 				}
 			} else {	// 旋转图片
+			console.log(this.rect)
 				for (let i = 0; i < this.rect.length; i++) {
 					this.ctxn[i] = uni.createCanvasContext(i + 'c')
 					// 放大系数
@@ -100,7 +101,13 @@
 					this.ctxn[i].rotate(Math.PI / 2)
 					this.ctxn[i].translate(0, -60)
 					this.ctxn[i].scale(xe,ye)
-					this.ctxn[i].drawImage(this.imgInfo.path,-this.rect[i].starty,this.rect[i].endx -c_width, c_height, c_width)
+					let _this = this
+					uni.getImageInfo({
+						src:_this.imgInfo.path,
+						success() {
+							_this.ctxn[i].drawImage(_this.imgInfo.path,-_this.rect[i].starty,_this.rect[i].endx -c_width, c_height, c_width)
+						}
+					})
 				}
 			}
 

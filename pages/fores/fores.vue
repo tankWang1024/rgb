@@ -56,6 +56,8 @@
 			uni.setNavigationBarTitle({
 				title:options.title
 			})
+			let c_height = app.globalData.windowHeight - 130
+			let c_width = app.globalData.windowWidth
 			this.rgbArr = app.globalData.rgbArr2;
 			this.rect = app.globalData.rect2
 			this.imgInfo = app.globalData.imgInfo2
@@ -114,8 +116,6 @@
 					}
 					break;
 			}
-			let c_height = app.globalData.windowHeight - 100
-			let c_width = app.globalData.windowWidth
 			if(this.imgInfo.width < this.imgInfo.height){
 				for (let i = 0; i < this.rect.length; i++) {
 					this.ctxn[i] = uni.createCanvasContext(i + 'c')
