@@ -32,8 +32,8 @@ if (typeof Promise !== 'undefined' && !Promise.prototype.finally) {
 if (uni.restoreGlobal) {
   uni.restoreGlobal(weex, plus, setTimeout, clearTimeout, setInterval, clearInterval);
 }
-__definePage('pages/canvas/canvas', function () {return Vue.extend(__webpack_require__(/*! pages/canvas/canvas.vue?mpType=page */ 13).default);});
 __definePage('pages/index/index', function () {return Vue.extend(__webpack_require__(/*! pages/index/index.vue?mpType=page */ 2).default);});
+__definePage('pages/canvas/canvas', function () {return Vue.extend(__webpack_require__(/*! pages/canvas/canvas.vue?mpType=page */ 13).default);});
 __definePage('pages/forecast/forecast', function () {return Vue.extend(__webpack_require__(/*! pages/forecast/forecast.vue?mpType=page */ 32).default);});
 __definePage('pages/res/res', function () {return Vue.extend(__webpack_require__(/*! pages/res/res.vue?mpType=page */ 42).default);});
 __definePage('pages/chart/chart', function () {return Vue.extend(__webpack_require__(/*! pages/chart/chart.vue?mpType=page */ 47).default);});
