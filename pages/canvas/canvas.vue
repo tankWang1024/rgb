@@ -18,8 +18,8 @@
 			</view>
 		</view>
 		<view class="btn-box">
-			<button type="default" @tap="changeGradient" class="btn gradient">{{gradientState}}</button>
-			<button type="default" @tap="getRes" class="btn">确定</button>
+			<button @tap="changeGradient" class="gradient" :class="{'activebtn':gradientFlag}">{{gradientState}}</button>
+			<button @tap="getRes" class="btn">确定</button>
 		</view>
 		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消"></prompt>
 		<prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消"></prompt2>
@@ -441,6 +441,13 @@
 	}
 
 	.gradient {
+		height: 40px;
+		line-height: 40px;
 		width: 70%;
+		background-color: rgb(182,182,182);
+	}
+	
+	.activebtn{
+		background-color: rgb(255, 196, 62);
 	}
 </style>
