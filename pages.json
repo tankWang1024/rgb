@@ -1,6 +1,11 @@
 {
 	"pages": [
 		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "Index"
+			}
+		},{
 			"path": "pages/forecast/forecast",
 			"style": {
 				"navigationBarTitleText": "Samples"
@@ -11,14 +16,9 @@
 				"navigationBarTitleText": "ROI Manager"
 			}
 		},{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "Index"
-			}
-		},{
 			"path": "pages/res/res",
 			"style": {
-				"navigationBarTitleText": "结果"
+				"navigationBarTitleText": "res"
 			}
 		},{
 			"path": "pages/chart/chart",
@@ -28,7 +28,7 @@
 		}, {
 			"path": "pages/fores/fores",
 			"style": {
-				"navigationBarTitleText": "预测结果"
+				"navigationBarTitleText": "prediction"
 			}
 		}
 	],

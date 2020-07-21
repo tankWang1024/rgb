@@ -166,7 +166,10 @@
 				let avery = sumy / length
 				let fenzi = xiyi - length * averx * avery
 				let fenmuLine = xi2 - length * averx * averx
-				let fenmu = Math.pow(fenmuLine * (yi2 - length * avery * avery), 1 / 2)
+				console.log(fenmuLine,yi2,length,avery,avery,fenmuLine * (yi2 - length * avery * avery))
+				// 根号下面 为负数。
+				let fenmu = Math.pow(Math.abs(fenmuLine * (yi2 - length * avery * avery)), 1 / 2)
+				console.log(fenzi,fenmu)
 				let conR = Math.abs(fenzi / fenmu)
 				let lineb = fenzi / fenmuLine
 				let linea = avery - lineb * averx
@@ -212,7 +215,7 @@
 				textSize: 10,
 				data: []
 			}, {
-				name: 'C - ' + options.y,
+				name: '浓度' + options.y,
 				type: 'line',
 				dataLabel: false,
 				color: '#000000',

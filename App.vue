@@ -58,6 +58,7 @@
 	/*每个页面公共css */
 	body {
 		height: 100%;
+		font-family: 'Times New Roman';
 	}
 
 	uni-page-body {

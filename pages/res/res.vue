@@ -24,7 +24,7 @@
 		</view>
 		<view class="foot">
 			<view class="card-title">
-				Alternative relation
+				Coordinate selection
 			</view>
 			<view class="card">
 				<view class="card-item" v-for="(item,index) in yArr" @tap="checkY(index)" :class="[index === selectIndex?'selectItem':'']">
@@ -59,7 +59,6 @@
 		methods: {
 			checkY(index) {
 				this.selectIndex = index
-				let y = this.yArr[index]
 			},
 			toChart() {
 				uni.navigateTo({
