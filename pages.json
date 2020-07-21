@@ -1,19 +1,19 @@
 {
 	"pages": [
 		{
+			"path": "pages/canvas/canvas",
+			"style": {
+				"navigationBarTitleText": "ROI Manager"
+			}
+		},{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
 		},{
-			"path": "pages/canvas/canvas",
-			"style": {
-				"navigationBarTitleText": "圈画图片"
-			}
-		},{
 			"path": "pages/forecast/forecast",
 			"style": {
-				"navigationBarTitleText": "圈画预测区域"
+				"navigationBarTitleText": "Samples"
 			}
 		},{
 			"path": "pages/res/res",

@@ -77,20 +77,27 @@
 
 		},
 		methods: {
-			changeName(){
+			changeName() {
 				this.$refs.prompt.show();
+			},
+			setxy(startx,starty,endx,endy){
+				this.startx = startx
+				this.starty = starty
+				this.endx = endx
+				this.endy = endy
 			},
 			copyRect() {
 				if (this.rect.length) {
-					console.log('复制第一个矩形')
 					this.rect.push({
 						startx: this.rect[0].startx + 10,
 						starty: this.rect[0].starty + 10,
 						endx: this.rect[0].endx + 10,
 						endy: this.rect[0].endy + 10
 					})
+					this.setxy(this.rect[0].startx + 10,this.rect[0].starty + 10,this.rect[0].endx + 10,this.rect[0].endy + 10)
 					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
 						this.rect[0].endy - this.rect[0].starty)
+					this.ctx.fillText(this.rect.length, this.rect[-1].endx, this.rect[-1].starty)
 					this.ctx.draw(true)
 					this.getRGB()
 				} else {
@@ -160,17 +167,24 @@
 						let endy = Math.round(e.changedTouches[0].y)
 						let disX = endx - this.moveStartx
 						let disY = endy - this.moveStarty
-						this.rect[this.movingIndex] = {
-							startx: this.rect[this.movingIndex].startx + disX,
-							starty: this.rect[this.movingIndex].starty + disY,
-							endx: this.rect[this.movingIndex].endx + disX,
-							endy: this.rect[this.movingIndex].endy + disY
-						}
+						let _startx = this.rect[this.movingIndex].startx + disX
+						let _starty = this.rect[this.movingIndex].starty + disY
+						let _endx = this.rect[this.movingIndex].endx + disX
+						let _endy = this.rect[this.movingIndex].endy + disY
+						this.$set(this.rect, this.movingIndex, {
+							startx: _startx,
+							starty: _starty,
+							endx: _endx,
+							endy: _endy
+						})
 						for (let item of this.rect) {
 							this.ctx.setStrokeStyle('red')
 							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 							this.ctx.draw(true)
 						}
+						this.setxy(_startx,_starty,_endx,_endy)
+						this.rgbArr.splice(this.rgbArr.length - 1, 1);
+						this.getRGB()
 						this.movingIndex = -1;
 					} else {
 						return
@@ -349,7 +363,8 @@
 		background-color: rgb(255, 196, 62);
 		margin: 0;
 	}
-	.large-btn{
+
+	.large-btn {
 		width: 60%;
 	}
 </style>

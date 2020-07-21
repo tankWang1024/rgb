@@ -6,11 +6,11 @@
 		<view class="toolbar">
 			<view class="toolbar-item" @tap="copyRect">
 				<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'"></image>
-				<text class="toolbar-text" :class="{'active-text':rect.length}">复制</text>
+				<text class="toolbar-text" :class="{'active-text':rect.length}"> add</text>
 			</view>
-			<view class="toolbar-item"  @tap="changeMove">
-				<image class="btn-img" :src="moveFlag?'../../static/move.svg':'../../static/move2.svg'"></image>
-				<text class="toolbar-text" :class="{'activate':moveFlag}">移动</text>
+			<view class="toolbar-item" @tap="changeMove">
+				<image class="btn-img" :src="moveFlag?'../../static/sel.svg':'../../static/sel2.svg'"></image>
+				<text class="toolbar-text" :class="{'activate':!moveFlag}">圈画</text>
 			</view>
 			<view class="toolbar-item" @tap="revoke">
 				<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'"></image>
@@ -18,11 +18,12 @@
 			</view>
 		</view>
 		<view class="btn-box">
-			<button @tap="changeGradient" class="gradient" :class="{'activebtn':gradientFlag}">{{gradientState}}</button>
+			<!-- <button @tap="changeGradient" class="gradient" :class="{'activebtn':gradientFlag}">{{gradientState}}</button> -->
+			<button @tap="writeC" class="gradient">填写浓度</button>
 			<button @tap="getRes" class="btn">确定</button>
 		</view>
 		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消"></prompt>
-		<prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消"></prompt2>
+		<!-- <prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消"></prompt2> -->
 	</view>
 </template>
 
@@ -30,7 +31,7 @@
 	import app from '../../App.vue'
 
 	import prompt from '../../components/prompt.vue'
-	import prompt2 from '../../components/prompt2.vue'
+	// import prompt2 from '../../components/prompt2.vue'
 
 	import {
 		dataGet,
@@ -40,10 +41,11 @@
 	export default {
 		components: {
 			prompt,
-			prompt2
+			// prompt2
 		},
 		data() {
 			return {
+				next: true,
 				gradientFlag: false,
 				moveFlag: false,
 				movingIndex: -1,
@@ -82,25 +84,37 @@
 			rotateImg(this) // 是否旋转图片
 		},
 		methods: {
+			writeC() {
+				if (this.rect.length > this.MIC.length) {
+					this.$refs.prompt.show()
+				}
+			},
 			copyRect() {
-				if (this.rect.length) {
-					console.log('复制第一个矩形')
-					this.rect.push({
-						startx: this.rect[0].startx + 10,
-						starty: this.rect[0].starty + 10,
-						endx: this.rect[0].endx + 10,
-						endy: this.rect[0].endy + 10
-					})
-					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
-						this.rect[0].endy - this.rect[0].starty)
-					this.ctx.draw(true)
-					if (!this.gradientFlag) { // 梯度状态下先不输入浓度
-						this.$refs.prompt.show()
+				if (this.next) {
+					if (this.rect.length) {
+						console.log('复制第一个矩形')
+						this.rect.push({
+							startx: this.rect[0].startx + 10,
+							starty: this.rect[0].starty + 10,
+							endx: this.rect[0].endx + 10,
+							endy: this.rect[0].endy + 10
+						})
+						this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
+							this.rect[0].endy - this.rect[0].starty)
+						this.ctx.draw(true)
+						if (!this.gradientFlag) { // 梯度状态下先不输入浓度
+							this.$refs.prompt.show()
+						}
+						this.next = false
+					} else {
+						return
 					}
 				} else {
-					return
+					uni.showToast({
+						title: '未填写浓度，无法进行下一步',
+						icon: 'none'
+					})
 				}
-
 			},
 			changeMove() {
 				console.log('change')
@@ -127,14 +141,22 @@
 								}
 							}
 						}
+						console.log(this.movingIndex)
 					} else {
 						console.log('无矩形可以移动')
 						return
 					}
 
 				} else {
-					this.startx = Math.round(e.touches[0].x)
-					this.starty = Math.round(e.touches[0].y)
+					if (this.next) {
+						this.startx = Math.round(e.touches[0].x)
+						this.starty = Math.round(e.touches[0].y)
+					} else {
+						uni.showToast({
+							title: '未填写浓度，无法进行下一步',
+							icon: 'none'
+						})
+					}
 				}
 			},
 			moveArt(e) {
@@ -149,17 +171,20 @@
 						let height = this.rect[this.movingIndex].endy - this.rect[this.movingIndex].starty
 						this.ctx.strokeRect(this.rect[this.movingIndex].startx + disX, this.rect[this.movingIndex].starty + disY, width,
 							height)
-						console.log('移动')
+						this.ctx.draw()
 					} else {
 						return
 					}
-
 				} else {
-					this.endx = Math.round(e.touches[0].x)
-					this.endy = Math.round(e.touches[0].y)
-					this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
+					if (this.next) {
+						this.endx = Math.round(e.touches[0].x)
+						this.endy = Math.round(e.touches[0].y)
+						this.ctx.strokeRect(this.startx, this.starty, this.endx - this.startx, this.endy - this.starty)
+						this.ctx.draw()
+					} else {
+						return
+					}
 				}
-				this.ctx.draw()
 			},
 			endArt(e) {
 				if (this.moveFlag) {
@@ -168,68 +193,92 @@
 						let endy = Math.round(e.changedTouches[0].y)
 						let disX = endx - this.moveStartx
 						let disY = endy - this.moveStarty
-
+						let startx = this.rect[this.movingIndex].startx + disX
+						let starty = this.rect[this.movingIndex].starty + disY
+						endx = this.rect[this.movingIndex].endx + disX
+						endy = this.rect[this.movingIndex].endy + disY
 						this.rect[this.movingIndex] = {
-							startx: this.rect[this.movingIndex].startx + disX,
-							starty: this.rect[this.movingIndex].starty + disY,
-							endx: this.rect[this.movingIndex].endx + disX,
-							endy: this.rect[this.movingIndex].endy + disY
+							startx:startx,
+							starty:starty,
+							endx:endx,
+							endy:endy
 						}
-						for (let item of this.rect) {
-							this.ctx.setStrokeStyle('red')
-							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-							this.ctx.draw(true)
-						}
-						this.movingIndex = -1;
+						let that = this
+						console.log(this.rect[this.movingIndex])
+						uni.canvasGetImageData({
+							canvasId: 'rgbCanvas',
+							x:  that.rect[that.movingIndex].startx,
+							y: that.rect[that.movingIndex].starty,
+							width: that.rect[that.movingIndex].endx - that.rect[that.movingIndex].startx,
+							height: that.rect[that.movingIndex].endy - that.rect[that.movingIndex].starty,
+							success(res) {
+								let obj = dataGet(res.data)
+								that.rgbArr[that.movingIndex] = obj
+								console.log(that.rgbArr)
+								that.ctx.draw()
+								for (let item of that.rect) {
+									that.ctx.setStrokeStyle('red')
+									that.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+									that.ctx.draw(true)
+								}
+								that.movingIndex = -1;
+							},
+							fail(err) {
+								console.log(err)
+							}
+						},that)
 					} else {
 						return
 					}
 
 				} else {
-					this.endx = Math.round(e.changedTouches[0].x)
-					this.endy = Math.round(e.changedTouches[0].y)
-					this.ctx.closePath()
-					if (this.startx > this.endx) {
-						let temp = this.startx
-						this.startx = this.endx
-						this.endx = temp
+					if (this.next) {
+						this.endx = Math.round(e.changedTouches[0].x)
+						this.endy = Math.round(e.changedTouches[0].y)
+						this.ctx.closePath()
+						if (this.startx > this.endx) {
+							let temp = this.startx
+							this.startx = this.endx
+							this.endx = temp
+						}
+						if (this.starty > this.endy) {
+							let temp = this.starty
+							this.starty = this.endy
+							this.endy = temp
+						}
+						this.rect.push({
+							startx: this.startx,
+							starty: this.starty,
+							endx: this.endx,
+							endy: this.endy
+						})
+						this.ctx.draw()
+						for (let item of this.rect) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+							this.ctx.draw(true)
+						}
+						this.next = false
+					} else {
+						return
 					}
-					if (this.starty > this.endy) {
-						let temp = this.starty
-						this.starty = this.endy
-						this.endy = temp
-					}
-					this.rect.push({
-						startx: this.startx,
-						starty: this.starty,
-						endx: this.endx,
-						endy: this.endy
-					})
-					this.ctx.draw()
-					for (let item of this.rect) {
-						this.ctx.setStrokeStyle('red')
-						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-						this.ctx.draw(true)
-					}
-					if (!this.gradientFlag) {
-						// 非梯度状态，填这次绘制区域的浓度
-						this.$refs.prompt.show();
-					}
+					// if (!this.gradientFlag) {
+					// 	// 非梯度状态，填这次绘制区域的浓度
+					// 	this.$refs.prompt.show();
+					// }
 				}
 			},
-			changeGradient() {
-				this.gradientFlag = !this.gradientFlag
-				if (this.gradientFlag) { // 开启
-
-
-				} else { // 关闭
-					let count = this.rect.length - this.MIC.length
-					console.log('矩形' + count)
-					if (count) {
-						this.$refs.prompt2.show()
-					}
-				}
-			},
+			// changeGradient() {
+			// 	this.gradientFlag = !this.gradientFlag
+			// 	if (this.gradientFlag) { // 开启
+			// 	} else { // 关闭
+			// 		let count = this.rect.length - this.MIC.length
+			// 		console.log('矩形' + count)
+			// 		if (count) {
+			// 			this.$refs.prompt2.show()
+			// 		}
+			// 	}
+			// },
 
 			revoke() { // 撤销
 				if (this.rect.length >= 1) {
@@ -247,6 +296,7 @@
 						this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
 						this.ctx.draw(true)
 					}
+					this.next = true
 				} else {}
 
 			},
@@ -255,12 +305,11 @@
 					app.globalData.MIC = this.MIC;
 					app.globalData.rgbArr = this.rgbArr
 					app.globalData.rect = this.rect
-					// console.log(app.globalData.rect)
 					uni.navigateTo({
 						url: '../res/res'
 					})
 				} else {
-					this.$refs.prompt2.show()
+					// this.$refs.prompt2.show()
 				}
 
 			},
@@ -301,52 +350,52 @@
 					this.promptVal = e;
 					this.getRGB()
 					this.MIC.push(e)
+					this.next = true
 					this.$refs.prompt.hide();
 				}
 			},
 			onCancel() {
-				this.$refs.prompt2.hide();
 				this.promptVal = "";
-				this.rect.splice(this.rect.length - 1, 1);
-				this.ctx.draw()
-				for (let item of this.rect) {
-					this.ctx.setStrokeStyle('red')
-					this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-					this.ctx.draw(true)
-				}
+				// this.rect.splice(this.rect.length - 1, 1);
+				// this.ctx.draw()
+				// for (let item of this.rect) {
+				// 	this.ctx.setStrokeStyle('red')
+				// 	this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+				// 	this.ctx.draw(true)
+				// }
 			},
-			onConfirm2(starter, gradient) {
-				console.log(starter, gradient);
-				let that = this;
-				let length = this.MIC.length
-				for (let i = this.MIC.length; i < this.rect.length; i++) {
-					this.MIC.push(starter + (i - length) * gradient)
-					uni.canvasGetImageData({
-						canvasId: 'rgbCanvas',
-						x: this.rect[i].startx,
-						y: this.rect[i].starty,
-						width: this.rect[i].endx - this.rect[i].startx,
-						height: this.rect[i].endy - this.rect[i].starty,
-						success(res) {
-							let obj = dataGet(res.data)
-							that.rgbArr.push(obj)
-							that.startx = 0
-							that.starty = 0
-							that.endx = 0
-							that.endy = 0
-						},
-						fail(err) {
-							console.log(err)
-						}
-					}, that)
-				}
-				this.gradientFlag = false
-				this.$refs.prompt2.hide();
-			},
-			onCancel2() {
-				this.$refs.prompt2.hide();
-				this.gradientFlag = true
-			},
+			// onConfirm2(starter, gradient) {
+			// 	console.log(starter, gradient);
+			// 	let that = this;
+			// 	let length = this.MIC.length
+			// 	for (let i = this.MIC.length; i < this.rect.length; i++) {
+			// 		this.MIC.push(starter + (i - length) * gradient)
+			// 		uni.canvasGetImageData({
+			// 			canvasId: 'rgbCanvas',
+			// 			x: this.rect[i].startx,
+			// 			y: this.rect[i].starty,
+			// 			width: this.rect[i].endx - this.rect[i].startx,
+			// 			height: this.rect[i].endy - this.rect[i].starty,
+			// 			success(res) {
+			// 				let obj = dataGet(res.data)
+			// 				that.rgbArr.push(obj)
+			// 				that.startx = 0
+			// 				that.starty = 0
+			// 				that.endx = 0
+			// 				that.endy = 0
+			// 			},
+			// 			fail(err) {
+			// 				console.log(err)
+			// 			}
+			// 		}, that)
+			// 	}
+			// 	this.gradientFlag = false
+			// 	this.$refs.prompt2.hide();
+			// },
+			// onCancel2() {
+			// 	this.$refs.prompt2.hide();
+			// 	this.gradientFlag = true
+			// },
 
 		}
 	}
@@ -417,17 +466,19 @@
 
 	.toolbar-text {
 		margin-top: 4px;
-		width: 40px;
+		width: 100%;
 		text-align: center;
 		color: #8a8a8a;
 	}
 
-	.active-text{
+	.active-text {
 		color: #FFFFFF;
 	}
-	.activate{
+
+	.activate {
 		color: rgb(255, 196, 62);
 	}
+
 	.btn-img {
 		width: 50px;
 		height: 40px;
@@ -444,10 +495,12 @@
 		height: 40px;
 		line-height: 40px;
 		width: 70%;
-		background-color: rgb(182,182,182);
+		outline: none;
+		background-color: rgb(182, 182, 182);
+		/* background-color: rgb(255, 196, 62); */
 	}
-	
-	.activebtn{
+
+	.activebtn {
 		background-color: rgb(255, 196, 62);
 	}
 </style>

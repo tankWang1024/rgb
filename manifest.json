@@ -1,8 +1,8 @@
 {
-    "name" : "rgb",
+    "name" : "浓度检测",
     "appid" : "__UNI__F3B0B42",
     "description" : "",
-    "versionName" : "1.0.0",
+    "versionName" : "1.1.0",
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
