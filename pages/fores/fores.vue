@@ -2,16 +2,16 @@
 	<view>
 		<view class="title-box">
 			<view class="rect">
-				图片
+				Image
 			</view>
 			<view class="num">
-				序号
+				No.
 			</view>
 			<view class="rgb">
 				<text>{{interText}}</text>
 			</view>
 			<view class="num">
-				预测浓度
+				C
 			</view>
 		</view>
 		<view v-for="(item,index) in rect" class="box">
@@ -108,9 +108,9 @@
 						this.inter.push(item['r'] / item['g'])
 					}
 					break;
-				case '灰度':
-					console.log('灰度');
-					for (let item of app.globalData.rgbArr) {
+				case 'Gray':
+					console.log('Gray');
+					for (let item of app.globalData.rgbArr2) {
 						this.MIC.push((0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'] - linea) / lineb)
 						this.inter.push(0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'])
 					}

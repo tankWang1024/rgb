@@ -7,21 +7,21 @@
 		<view class="toolbar">
 			<view class="toolbar-item" @tap="copyRect">
 				<image class="btn-img" :src="rect.length?'../../static/copy.svg':'../../static/copy2.svg'"></image>
-				<text class="toolbar-text">复制</text>
+				<text class="toolbar-text">add</text>
 			</view>
 			<view class="toolbar-item" @tap="changeMove">
-				<image class="btn-img" :src="moveFlag?'../../static/move.svg':'../../static/move2.svg'"></image>
-				<text class="toolbar-text" :class="{'activate':moveFlag}">移动</text>
+				<image class="btn-img" :src="moveFlag?'../../static/sel.svg':'../../static/sel2.svg'"></image>
+				<text class="toolbar-text" :class="{'activate':!moveFlag}">draw</text>
 			</view>
 			<view class="toolbar-item" @tap="revoke">
 				<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'"></image>
-				<text class="toolbar-text">撤销</text>
+				<text class="toolbar-text">revoke</text>
 			</view>
 		</view>
 
 		<view class="btn-box">
-			<button @tap="changeName" class="btn large-btn">修改命名</button>
-			<button @tap="getForecast" class="btn">去预测</button>
+			<!-- <button @tap="changeName" class="btn large-btn">修改命名</button> -->
+			<button @tap="getForecast" class="btn">prediction</button>
 		</view>
 		<prompt ref="prompt" @onConfirm="onConfirm" title="命名" btn_cancel="取消"></prompt>
 	</view>
@@ -77,15 +77,9 @@
 
 		},
 		methods: {
-			changeName() {
-				this.$refs.prompt.show();
-			},
-			setxy(startx,starty,endx,endy){
-				this.startx = startx
-				this.starty = starty
-				this.endx = endx
-				this.endy = endy
-			},
+			// changeName() {
+			// 	this.$refs.prompt.show();
+			// },
 			copyRect() {
 				if (this.rect.length) {
 					this.rect.push({
@@ -94,21 +88,23 @@
 						endx: this.rect[0].endx + 10,
 						endy: this.rect[0].endy + 10
 					})
-					this.setxy(this.rect[0].startx + 10,this.rect[0].starty + 10,this.rect[0].endx + 10,this.rect[0].endy + 10)
+					this.startx = this.rect[0].startx + 10
+					this.starty = this.rect[0].starty + 10
+					this.endx = this.rect[0].endx + 10
+					this.edny = this.rect[0].endy + 10
+					this.getRGB()
+					this.moveFlag = true
 					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
 						this.rect[0].endy - this.rect[0].starty)
-					this.ctx.fillText(this.rect.length, this.rect[-1].endx, this.rect[-1].starty)
+					let length = this.rect.length
+					this.ctx.fillText(this.rect.length, this.rect[length - 1].endx, this.rect[length - 1].starty)
 					this.ctx.draw(true)
-					this.getRGB()
 				} else {
 					return
 				}
 			},
 			changeMove() {
-				if (this.rect.length) {
-					console.log('change')
-					this.moveFlag = !this.moveFlag
-				}
+				this.moveFlag = !this.moveFlag
 			},
 			startArt(e) {
 				if (this.moveFlag) {
@@ -116,10 +112,12 @@
 						let disx = this.c_width
 						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
+							let movex = Math.floor((this.rect[i].endx - this.rect[i].startx) / 2)
+							let movey = Math.floor((this.rect[i].endy - this.rect[i].starty) / 2)
 							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
-								Math.round(e.touches[0].x) < this.rect[i].endx &&
+								Math.round(e.touches[0].x) < this.rect[i].endx + movex &&
 								Math.round(e.touches[0].y) > this.rect[i].starty &&
-								Math.round(e.touches[0].y) < this.rect[i].endy) {
+								Math.round(e.touches[0].y) < this.rect[i].endy + movey) {
 								let x = e.touches[0].x - this.rect[i].startx
 								let y = e.touches[0].y - this.rect[i].startx
 								if (x <= disx && y <= disy) {
@@ -171,21 +169,37 @@
 						let _starty = this.rect[this.movingIndex].starty + disY
 						let _endx = this.rect[this.movingIndex].endx + disX
 						let _endy = this.rect[this.movingIndex].endy + disY
-						this.$set(this.rect, this.movingIndex, {
+						this.rect[this.movingIndex] = {
 							startx: _startx,
 							starty: _starty,
 							endx: _endx,
 							endy: _endy
-						})
-						for (let item of this.rect) {
-							this.ctx.setStrokeStyle('red')
-							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-							this.ctx.draw(true)
 						}
-						this.setxy(_startx,_starty,_endx,_endy)
-						this.rgbArr.splice(this.rgbArr.length - 1, 1);
-						this.getRGB()
-						this.movingIndex = -1;
+						let that = this
+						uni.canvasGetImageData({
+							canvasId: 'rgbCanvas',
+							x: that.rect[that.movingIndex].startx,
+							y: that.rect[that.movingIndex].starty,
+							width: that.rect[that.movingIndex].endx - that.rect[that.movingIndex].startx,
+							height: that.rect[that.movingIndex].endy - that.rect[that.movingIndex].starty,
+							success(res) {
+								let obj = dataGet(res.data)
+								that.rgbArr[that.movingIndex] = obj
+								console.log(that.rgbArr)
+								that.ctx.draw()
+								for (let i=0;i<that.rect.length;i++) {
+									that.ctx.setStrokeStyle('red')
+									that.ctx.strokeRect(that.rect[i].startx, that.rect[i].starty, that.rect[i].endx - that.rect[i].startx, that.rect[i].endy - that.rect[i].starty)
+									that.ctx.setFillStyle('red')
+									that.ctx.fillText(i+1, that.rect[i].endx, that.rect[i].starty) // 序号
+									that.ctx.draw(true)
+								}
+								that.movingIndex = -1;
+							},
+							fail(err) {
+								console.log(err)
+							}
+						}, that)
 					} else {
 						return
 					}
@@ -208,6 +222,7 @@
 						endx: this.endx,
 						endy: this.endy
 					})
+					console.log(this.rect)
 					this.ctx.closePath()
 					this.ctx.draw();
 					for (let i = 0; i < this.rect.length; i++) {
@@ -235,8 +250,7 @@
 						this.ctx.setStrokeStyle('red')
 						this.ctx.setFillStyle('red')
 						this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
-								i]
-							.endy - this.rect[i].starty)
+							i].endy - this.rect[i].starty)
 						this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
 						this.ctx.draw(true)
 					}
@@ -260,9 +274,10 @@
 					success(res) {
 						let obj = dataGet(res.data)
 						that.rgbArr.push(obj)
+						console.log(that.rgbArr)
 					},
 					fail(err) {
-
+						console.log(err)
 					}
 				}, that)
 			},
@@ -339,7 +354,7 @@
 
 	.toolbar-text {
 		margin-top: 4px;
-		width: 40px;
+		width: 100%;
 		text-align: center;
 		color: #8a8a8a;
 	}
@@ -360,11 +375,12 @@
 	.btn-box .btn {
 		height: 40px;
 		line-height: 40px;
+		flex: 1;
 		background-color: rgb(255, 196, 62);
 		margin: 0;
 	}
 
-	.large-btn {
+	/* .large-btn {
 		width: 60%;
-	}
+	} */
 </style>

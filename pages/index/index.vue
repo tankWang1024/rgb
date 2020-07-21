@@ -3,10 +3,10 @@
 		<view class="main">
 			<image class="logo-img" src="../../static/logo.svg" mode="scaleToFill"></image>
 			<!-- <text>concentration prediction</text> -->
-			<text>浓度预测</text>
+			<text>concentration\nmeasurement</text>
 		</view>
 		<view class="btn-box">
-			<button class="btn" @click="toPhoto">开始检测</button>
+			<button class="btn" @click="toPhoto">start</button>
 		</view>
 	</view>
 </template>
@@ -64,7 +64,9 @@
 
 	.main {
 		height: 70%;
-		letter-spacing: 28rpx;
+		/* letter-spacing: 28rpx; */
+		letter-spacing: 2px;
+		font-size: 20px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

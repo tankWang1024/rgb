@@ -12,10 +12,10 @@
 			</view>
 		</view> -->
 		<view class="title">
-			linear correlation: <text>{{conR.toFixed(4)}}</text>
+			Adj. R-Square: <text>{{conR.toFixed(4)}}</text>
 		</view>
 		<view class="sub-title">
-			Regression Equation: <text>y={{linea.toFixed(4)}}{{lineb<0?'':'+'}}{{lineb.toFixed(4)}}*x</text>
+			Linear equation: <text>y={{linea.toFixed(4)}}{{lineb<0?'':'+'}}{{lineb.toFixed(4)}}*x</text>
 		</view>
 		<view class="content">
 			<!-- #ifdef APP-PLUS || H5 -->
@@ -25,7 +25,7 @@
 			<!-- #ifndef APP-PLUS || H5 -->
 			<view>非 APP、H5 环境不支持</view>
 			<!-- #endif -->
-			<button class="btn" @tap="toForecast">去预测</button>
+			<button class="btn" @tap="toForecast">Real sample inspection</button>
 		</view>
 	</view>
 </template>
@@ -59,7 +59,7 @@
 						}]
 					},
 					xAxis: {
-						name: 'concentration',
+						name: 'C',
 						nameTextStyle: {
 							fontSize: 10,
 							align: 'right',
@@ -212,7 +212,7 @@
 				textSize: 10,
 				data: []
 			}, {
-				name: '浓度 - ' + options.y,
+				name: 'C - ' + options.y,
 				type: 'line',
 				dataLabel: false,
 				color: '#000000',
@@ -259,8 +259,8 @@
 						series[0].data.push(item['r'] / item['g'])
 					}
 					break;
-				case '灰度':
-					console.log('灰度');
+				case 'Gray':
+					console.log('Gray');
 					for (let item of app.globalData.rgbArr) {
 						series[0].data.push(0.299 * item['r'] + 0.587 * item['g'] + 0.114 * item['b'])
 					}

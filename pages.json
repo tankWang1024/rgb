@@ -1,6 +1,11 @@
 {
 	"pages": [
 		{
+			"path": "pages/forecast/forecast",
+			"style": {
+				"navigationBarTitleText": "Samples"
+			}
+		},{
 			"path": "pages/canvas/canvas",
 			"style": {
 				"navigationBarTitleText": "ROI Manager"
@@ -8,12 +13,7 @@
 		},{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "首页"
-			}
-		},{
-			"path": "pages/forecast/forecast",
-			"style": {
-				"navigationBarTitleText": "Samples"
+				"navigationBarTitleText": "Index"
 			}
 		},{
 			"path": "pages/res/res",
@@ -23,7 +23,7 @@
 		},{
 			"path": "pages/chart/chart",
 			"style": {
-				"navigationBarTitleText": "关系曲线"
+				"navigationBarTitleText": "chart"
 			}
 		}, {
 			"path": "pages/fores/fores",

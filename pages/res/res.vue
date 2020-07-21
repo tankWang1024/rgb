@@ -2,10 +2,10 @@
 	<view>
 		<view class="title-box">
 			<view class="rect">
-				图片
+				Image
 			</view>
 			<view class="num">
-				浓度
+				C
 			</view>
 			<view class="rgb">
 				<text>R</text><text>G</text><text>B</text>
@@ -24,17 +24,17 @@
 		</view>
 		<view class="foot">
 			<view class="card-title">
-				选择关系
+				Alternative relation
 			</view>
 			<view class="card">
 				<view class="card-item" v-for="(item,index) in yArr" @tap="checkY(index)" :class="[index === selectIndex?'selectItem':'']">
 					<image :src="index == selectIndex?'../../static/check.svg':''"></image>
 					<view class="item-text">
-						{{item}}
+						{{item}} - C
 					</view>
 				</view>
 			</view>
-			<button class="btn" @tap="toChart">确定</button>
+			<button class="btn" @tap="toChart">confirm</button>
 		</view>
 	</view>
 </template>
@@ -52,7 +52,7 @@
 				rect: [],
 				ctxn: [],
 				imgInfo: null,
-				yArr: ['G/B', 'R/B', 'R/G', 'R', 'G', 'B', '灰度'],
+				yArr: ['G/B', 'R/B', 'R/G', 'R', 'G', 'B', 'Gray'],
 				selectIndex: 0,
 			}
 		},
@@ -174,7 +174,8 @@
 	.card {
 		display: grid;
 		grid-template-columns: repeat(2, 47%);
-		grid-gap: 6%;
+		grid-gap: 0 6%;
+		height: calc(100% + 48rpx);			/*行列间距百分比会超出容器*/
 	}
 
 	.card-item {

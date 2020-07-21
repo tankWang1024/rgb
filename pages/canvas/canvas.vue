@@ -10,17 +10,17 @@
 			</view>
 			<view class="toolbar-item" @tap="changeMove">
 				<image class="btn-img" :src="moveFlag?'../../static/sel.svg':'../../static/sel2.svg'"></image>
-				<text class="toolbar-text" :class="{'activate':!moveFlag}">圈画</text>
+				<text class="toolbar-text" :class="{'activate':!moveFlag}">draw</text>
 			</view>
 			<view class="toolbar-item" @tap="revoke">
 				<image class="btn-img" :src="rect.length?'../../static/last.svg':'../../static/last2.svg'"></image>
-				<text class="toolbar-text" :class="{'active-text':rect.length}">撤销</text>
+				<text class="toolbar-text" :class="{'active-text':rect.length}">revoke</text>
 			</view>
 		</view>
 		<view class="btn-box">
 			<!-- <button @tap="changeGradient" class="gradient" :class="{'activebtn':gradientFlag}">{{gradientState}}</button> -->
-			<button @tap="writeC" class="gradient">填写浓度</button>
-			<button @tap="getRes" class="btn">确定</button>
+			<button @tap="writeC" class="gradient" :class="{'activebtn':!next}">set concentration</button>
+			<button @tap="getRes" class="btn">confirm</button>
 		</view>
 		<prompt ref="prompt" @onConfirm="onConfirm" @onCancel="onCancel" title="填写浓度值" btn_cancel="取消"></prompt>
 		<!-- <prompt2 ref="prompt2" @onConfirm="onConfirm2" @onCancel="onCancel2" title="填写浓度" btn_cancel="取消"></prompt2> -->
@@ -67,9 +67,9 @@
 			}
 		},
 		computed: {
-			gradientState() {
-				return this.gradientFlag ? '关闭梯度绘制' : '开启梯度绘制'
-			}
+			// gradientState() {
+			// 	return this.gradientFlag ? '关闭梯度绘制' : '开启梯度绘制'
+			// }
 		},
 		onReady() {
 			this.rgbctx.draw()
@@ -89,7 +89,7 @@
 					this.$refs.prompt.show()
 				}
 			},
-			copyRect() {	// 复制，并改为移动状态
+			copyRect() {	// 复制，并改为移动状态,未获取rgb，默认用户会移动这个复制得到的矩形框
 				if (this.next) {
 					if (this.rect.length) {
 						this.rect.push({
@@ -126,10 +126,15 @@
 						let disx = this.c_width
 						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
-							if (Math.round(e.touches[0].x) > this.rect[i].startx + 20 &&
-								Math.round(e.touches[0].x) < this.rect[i].endx + 20 &&
-								Math.round(e.touches[0].y) > this.rect[i].starty + 20 &&
-								Math.round(e.touches[0].y) < this.rect[i].endy + 20) {
+							let movex = Math.floor((this.rect[i].endx - this.rect[i].startx)/2)
+							let movey = Math.floor((this.rect[i].endy - this.rect[i].starty)/2)
+							console.log(e.touches[0].x,e.touches[0].y)
+							console.log(this.rect[i])
+							console.log(movex,movey)
+							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
+								Math.round(e.touches[0].x) < this.rect[i].endx + movex &&
+								Math.round(e.touches[0].y) > this.rect[i].starty &&
+								Math.round(e.touches[0].y) < this.rect[i].endy + movey) {
 								let x = e.touches[0].x - this.rect[i].startx
 								let y = e.touches[0].y - this.rect[i].starty
 								if (x <= disx && y <= disy) {
@@ -352,11 +357,10 @@
 					return;
 				} else {
 					this.promptVal = e;
-					this.getRGB()
-					this.$refs.prompt.hide();
 					this.MIC.push(e)
 					this.next = true
-					
+					this.$refs.prompt.hide();
+					this.getRGB()
 				}
 			},
 			onCancel() {
@@ -499,10 +503,9 @@
 	.gradient {
 		height: 40px;
 		line-height: 40px;
-		width: 70%;
+		width: 65%;
 		outline: none;
-		/* background-color: rgb(182, 182, 182); */
-		background-color: rgb(255, 196, 62);
+		background-color: rgb(182, 182, 182);
 	}
 
 	.activebtn {
