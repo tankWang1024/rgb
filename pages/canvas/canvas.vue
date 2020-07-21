@@ -89,10 +89,9 @@
 					this.$refs.prompt.show()
 				}
 			},
-			copyRect() {
+			copyRect() {	// 复制，并改为移动状态
 				if (this.next) {
 					if (this.rect.length) {
-						console.log('复制第一个矩形')
 						this.rect.push({
 							startx: this.rect[0].startx + 10,
 							starty: this.rect[0].starty + 10,
@@ -102,9 +101,10 @@
 						this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
 							this.rect[0].endy - this.rect[0].starty)
 						this.ctx.draw(true)
-						if (!this.gradientFlag) { // 梯度状态下先不输入浓度
-							this.$refs.prompt.show()
-						}
+						// if (!this.gradientFlag) { // 梯度状态下先不输入浓度
+						// 	this.$refs.prompt.show()
+						// }
+						this.moveFlag = true
 						this.next = false
 					} else {
 						return
@@ -126,10 +126,10 @@
 						let disx = this.c_width
 						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
-							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
-								Math.round(e.touches[0].x) < this.rect[i].endx &&
-								Math.round(e.touches[0].y) > this.rect[i].starty &&
-								Math.round(e.touches[0].y) < this.rect[i].endy) {
+							if (Math.round(e.touches[0].x) > this.rect[i].startx + 20 &&
+								Math.round(e.touches[0].x) < this.rect[i].endx + 20 &&
+								Math.round(e.touches[0].y) > this.rect[i].starty + 20 &&
+								Math.round(e.touches[0].y) < this.rect[i].endy + 20) {
 								let x = e.touches[0].x - this.rect[i].startx
 								let y = e.touches[0].y - this.rect[i].starty
 								if (x <= disx && y <= disy) {
@@ -309,6 +309,10 @@
 						url: '../res/res'
 					})
 				} else {
+					uni.showToast({
+						title: '未填写浓度，无法进行下一步',
+						icon: 'none'
+					})
 					// this.$refs.prompt2.show()
 				}
 
@@ -349,9 +353,10 @@
 				} else {
 					this.promptVal = e;
 					this.getRGB()
+					this.$refs.prompt.hide();
 					this.MIC.push(e)
 					this.next = true
-					this.$refs.prompt.hide();
+					
 				}
 			},
 			onCancel() {
@@ -496,8 +501,8 @@
 		line-height: 40px;
 		width: 70%;
 		outline: none;
-		background-color: rgb(182, 182, 182);
-		/* background-color: rgb(255, 196, 62); */
+		/* background-color: rgb(182, 182, 182); */
+		background-color: rgb(255, 196, 62);
 	}
 
 	.activebtn {
