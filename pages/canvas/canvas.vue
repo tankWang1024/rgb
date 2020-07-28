@@ -117,7 +117,6 @@
 				}
 			},
 			changeMove() {
-				console.log('change')
 				this.moveFlag = !this.moveFlag
 			},
 			startArt(e) {
@@ -126,8 +125,8 @@
 						let disx = this.c_width
 						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
-							let movex = Math.floor((this.rect[i].endx - this.rect[i].startx) / 2)
-							let movey = Math.floor((this.rect[i].endy - this.rect[i].starty) / 2)
+							let movex = Math.floor(this.rect[i].endx - this.rect[i].startx)
+							let movey = Math.floor(this.rect[i].endy - this.rect[i].starty)
 							// console.log(e.touches[0].x,e.touches[0].y)
 							// console.log(this.rect[i])
 							// console.log(movex,movey)
@@ -146,7 +145,7 @@
 								}
 							}
 						}
-						// console.log(this.movingIndex)
+						console.log(this.movingIndex)
 					} else {
 						console.log('无矩形可以移动')
 						return
