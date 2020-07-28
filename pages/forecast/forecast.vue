@@ -68,7 +68,7 @@
 		},
 		onLoad() {
 			this.c_width = app.globalData.windowWidth
-			this.c_height = app.globalData.windowHeight - 130
+			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
 			this.ctx.setFontSize(26)

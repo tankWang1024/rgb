@@ -76,7 +76,7 @@
 		},
 		onLoad() {
 			this.c_width = app.globalData.windowWidth
-			this.c_height = app.globalData.windowHeight - 130
+			this.c_height = app.globalData.windowHeight - 100
 			this.imgInfo = app.globalData.imgInfo
 
 			this.ctx = uni.createCanvasContext('myCanvas')
@@ -448,7 +448,7 @@
 
 	.btn-box {
 		width: 80%;
-		height: 70px;
+		height: 40px;
 		margin: 0 auto;
 		display: flex;
 		align-items: center;
@@ -488,7 +488,7 @@
 	}
 
 	.toolbar-text {
-		margin-top: 4px;
+		/* margin-top: 4px; */
 		width: 100%;
 		text-align: center;
 		color: #8a8a8a;

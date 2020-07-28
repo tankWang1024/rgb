@@ -78,7 +78,7 @@
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
 			this.imgInfo = app.globalData.imgInfo
-			let c_height = app.globalData.windowHeight - 130
+			let c_height = app.globalData.windowHeight - 100
 			let c_width = app.globalData.windowWidth
 
 			if (this.imgInfo.width < this.imgInfo.height) {

@@ -56,7 +56,7 @@
 			uni.setNavigationBarTitle({
 				title:options.title
 			})
-			let c_height = app.globalData.windowHeight - 130
+			let c_height = app.globalData.windowHeight - 100
 			let c_width = app.globalData.windowWidth
 			this.rgbArr = app.globalData.rgbArr2;
 			this.rect = app.globalData.rect2
