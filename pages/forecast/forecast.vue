@@ -43,6 +43,7 @@
 		data() {
 			return {
 				moveFlag: false,
+				rotate: false,
 				movingIndex: -1,
 				moveStartx: '',
 				moveStarty: '',
@@ -71,7 +72,10 @@
 			this.imgInfo = app.globalData.imgInfo2
 			this.ctx = uni.createCanvasContext('myCanvas')
 			this.ctx.setFontSize(26)
-
+			if (this.imgInfo.width > this.imgInfo.height) {
+				this.rotate = true
+			}
+			console.log(this.rotate)
 			this.rgbctx = uni.createCanvasContext('rgbCanvas')
 			rotateImg(this)
 
@@ -94,11 +98,22 @@
 					this.edny = this.rect[0].endy + 10
 					this.getRGB()
 					this.moveFlag = true
-					this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
-						this.rect[0].endy - this.rect[0].starty)
-					let length = this.rect.length
-					this.ctx.fillText(this.rect.length, this.rect[length - 1].endx, this.rect[length - 1].starty)
-					this.ctx.draw(true)
+					if (this.rotate) {
+						this.ctx.rotate(Math.PI / 2)
+						this.ctx.strokeRect(this.rect[0].starty + 20, -this.rect[0].endx - 10, this.rect[0].endy - this.rect[0].starty,
+							this.rect[0].endx - this.rect[0].startx)
+						let length = this.rect.length
+						this.ctx.fillText(this.rect.length, this.rect[length - 1].endy + 1, -this.rect[length - 1].endx)
+						this.ctx.draw(true)
+						this.ctx.rotate(-Math.PI / 2)
+					} else {
+						this.ctx.strokeRect(this.rect[0].startx + 10, this.rect[0].starty + 20, this.rect[0].endx - this.rect[0].startx,
+							this.rect[0].endy - this.rect[0].starty)
+						let length = this.rect.length
+						this.ctx.fillText(this.rect.length, this.rect[length - 1].endx, this.rect[length - 1].starty)
+						this.ctx.draw(true)
+					}
+
 				} else {
 					return
 				}
@@ -150,7 +165,6 @@
 						let height = this.rect[this.movingIndex].endy - this.rect[this.movingIndex].starty
 						this.ctx.strokeRect(this.rect[this.movingIndex].startx + disX, this.rect[this.movingIndex].starty + disY, width,
 							height)
-						console.log('移动')
 					} else {
 						return
 					}
@@ -162,6 +176,7 @@
 				this.ctx.draw()
 			},
 			endArt(e) {
+				let that = this
 				if (this.moveFlag) {
 					if (this.movingIndex >= 0) {
 						let endx = Math.round(e.changedTouches[0].x)
@@ -178,7 +193,6 @@
 							endx: _endx,
 							endy: _endy
 						}
-						let that = this
 						uni.canvasGetImageData({
 							canvasId: 'rgbCanvas',
 							x: that.rect[that.movingIndex].startx,
@@ -190,12 +204,26 @@
 								that.rgbArr[that.movingIndex] = obj
 								console.log(that.rgbArr)
 								that.ctx.draw()
-								for (let i=0;i<that.rect.length;i++) {
-									that.ctx.setStrokeStyle('red')
-									that.ctx.strokeRect(that.rect[i].startx, that.rect[i].starty, that.rect[i].endx - that.rect[i].startx, that.rect[i].endy - that.rect[i].starty)
-									that.ctx.setFillStyle('red')
-									that.ctx.fillText(i+1, that.rect[i].endx, that.rect[i].starty) // 序号
-									that.ctx.draw(true)
+								if (that.rotate) {
+									that.ctx.rotate(Math.PI / 2)
+									for (let i = 0; i < that.rect.length; i++) {
+										that.ctx.setStrokeStyle('red')
+										that.ctx.strokeRect(that.rect[i].starty, -that.rect[i].endx, that.rect[i].endy - that.rect[i].starty, that.rect[
+											i].endx - that.rect[i].startx)
+										that.ctx.setFillStyle('red')
+										that.ctx.fillText(i + 1, that.rect[i].endy + 1, -that.rect[i].endx) // 序号
+										that.ctx.draw(true)
+									}
+									that.ctx.rotate(-Math.PI / 2)
+								} else {
+									for (let i = 0; i < that.rect.length; i++) {
+										that.ctx.setStrokeStyle('red')
+										that.ctx.strokeRect(that.rect[i].startx, that.rect[i].starty, that.rect[i].endx - that.rect[i].startx, that
+											.rect[i].endy - that.rect[i].starty)
+										that.ctx.setFillStyle('red')
+										that.ctx.fillText(i + 1, that.rect[i].endx, that.rect[i].starty) // 序号
+										that.ctx.draw(true)
+									}
 								}
 								that.movingIndex = -1;
 							},
@@ -226,16 +254,27 @@
 						endy: this.endy
 					})
 					console.log(this.rect)
-					this.ctx.closePath()
 					this.ctx.draw();
-					for (let i = 0; i < this.rect.length; i++) {
-						this.ctx.setStrokeStyle('red')
-						this.ctx.setFillStyle('red')
-						this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
-								i]
-							.endy - this.rect[i].starty)
-						this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
-						this.ctx.draw(true)
+					if (this.rotate) {
+						this.ctx.rotate(Math.PI / 2)
+						for (let i = 0; i < this.rect.length; i++) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.setFillStyle('red')
+							this.ctx.strokeRect(this.rect[i].starty, -this.rect[i].endx, this.rect[
+								i].endy - this.rect[i].starty, this.rect[i].endx - this.rect[i].startx)
+							this.ctx.fillText(i + 1, this.rect[i].endy + 1, -this.rect[i].endx) // 序号
+							this.ctx.draw(true)
+						}
+						this.ctx.rotate(-Math.PI / 2)
+					} else {
+						for (let i = 0; i < this.rect.length; i++) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.setFillStyle('red')
+							this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
+								i].endy - this.rect[i].starty)
+							this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
+							this.ctx.draw(true)
+						}
 					}
 					this.getRGB()
 				}
@@ -248,14 +287,30 @@
 				if (this.rect.length >= 1) {
 					this.rect.splice(this.rect.length - 1, 1);
 					this.rgbArr.splice(this.rgbArr.length - 1, 1);
-					this.ctx.draw()
-					for (let i = 0; i < this.rect.length; i++) {
-						this.ctx.setStrokeStyle('red')
-						this.ctx.setFillStyle('red')
-						this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
-							i].endy - this.rect[i].starty)
-						this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
-						this.ctx.draw(true)
+					this.ctx.draw();
+					if (this.rotate) {
+						console.log('heng')
+						this.ctx.rotate(Math.PI / 2)
+						this.ctx.draw()
+						for (let i = 0; i < this.rect.length; i++) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.setFillStyle('red')
+							this.ctx.strokeRect(this.rect[i].starty, -this.rect[i].endx, this.rect[
+								i].endy - this.rect[i].starty, this.rect[i].endx - this.rect[i].startx)
+							this.ctx.fillText(i + 1, this.rect[i].endy + 1, -this.rect[i].endx) // 序号
+							this.ctx.draw(true)
+						}
+						this.ctx.rotate(-Math.PI / 2)
+					} else {
+						console.log('shu')
+						for (let i = 0; i < this.rect.length; i++) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.setFillStyle('red')
+							this.ctx.strokeRect(this.rect[i].startx, this.rect[i].starty, this.rect[i].endx - this.rect[i].startx, this.rect[
+								i].endy - this.rect[i].starty)
+							this.ctx.fillText(i + 1, this.rect[i].endx, this.rect[i].starty) // 序号
+							this.ctx.draw(true)
+						}
 					}
 				}
 			},
