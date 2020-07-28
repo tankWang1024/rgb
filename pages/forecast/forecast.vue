@@ -203,9 +203,9 @@
 								let obj = dataGet(res.data)
 								that.rgbArr[that.movingIndex] = obj
 								console.log(that.rgbArr)
-								that.ctx.draw()
 								if (that.rotate) {
 									that.ctx.rotate(Math.PI / 2)
+									that.ctx.draw()
 									for (let i = 0; i < that.rect.length; i++) {
 										that.ctx.setStrokeStyle('red')
 										that.ctx.strokeRect(that.rect[i].starty, -that.rect[i].endx, that.rect[i].endy - that.rect[i].starty, that.rect[
@@ -216,6 +216,7 @@
 									}
 									that.ctx.rotate(-Math.PI / 2)
 								} else {
+									that.ctx.draw()
 									for (let i = 0; i < that.rect.length; i++) {
 										that.ctx.setStrokeStyle('red')
 										that.ctx.strokeRect(that.rect[i].startx, that.rect[i].starty, that.rect[i].endx - that.rect[i].startx, that
