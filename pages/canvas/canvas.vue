@@ -89,7 +89,7 @@
 					this.$refs.prompt.show()
 				}
 			},
-			copyRect() {	// 复制，并改为移动状态,未获取rgb，默认用户会移动这个复制得到的矩形框
+			copyRect() { // 复制，并改为移动状态,未获取rgb，默认用户会移动这个复制得到的矩形框
 				if (this.next) {
 					if (this.rect.length) {
 						this.rect.push({
@@ -126,11 +126,11 @@
 						let disx = this.c_width
 						let disy = this.c_height
 						for (let i = 0; i < this.rect.length; i++) {
-							let movex = Math.floor((this.rect[i].endx - this.rect[i].startx)/2)
-							let movey = Math.floor((this.rect[i].endy - this.rect[i].starty)/2)
-							console.log(e.touches[0].x,e.touches[0].y)
-							console.log(this.rect[i])
-							console.log(movex,movey)
+							let movex = Math.floor((this.rect[i].endx - this.rect[i].startx) / 2)
+							let movey = Math.floor((this.rect[i].endy - this.rect[i].starty) / 2)
+							// console.log(e.touches[0].x,e.touches[0].y)
+							// console.log(this.rect[i])
+							// console.log(movex,movey)
 							if (Math.round(e.touches[0].x) > this.rect[i].startx &&
 								Math.round(e.touches[0].x) < this.rect[i].endx + movex &&
 								Math.round(e.touches[0].y) > this.rect[i].starty &&
@@ -146,7 +146,7 @@
 								}
 							}
 						}
-						console.log(this.movingIndex)
+						// console.log(this.movingIndex)
 					} else {
 						console.log('无矩形可以移动')
 						return
@@ -203,35 +203,46 @@
 						endx = this.rect[this.movingIndex].endx + disX
 						endy = this.rect[this.movingIndex].endy + disY
 						this.rect[this.movingIndex] = {
-							startx:startx,
-							starty:starty,
-							endx:endx,
-							endy:endy
+							startx: startx,
+							starty: starty,
+							endx: endx,
+							endy: endy
 						}
-						let that = this
-						console.log(this.rect[this.movingIndex])
-						uni.canvasGetImageData({
-							canvasId: 'rgbCanvas',
-							x:  that.rect[that.movingIndex].startx,
-							y: that.rect[that.movingIndex].starty,
-							width: that.rect[that.movingIndex].endx - that.rect[that.movingIndex].startx,
-							height: that.rect[that.movingIndex].endy - that.rect[that.movingIndex].starty,
-							success(res) {
-								let obj = dataGet(res.data)
-								that.rgbArr[that.movingIndex] = obj
-								console.log(that.rgbArr)
-								that.ctx.draw()
-								for (let item of that.rect) {
-									that.ctx.setStrokeStyle('red')
-									that.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
-									that.ctx.draw(true)
-								}
-								that.movingIndex = -1;
-							},
-							fail(err) {
-								console.log(err)
-							}
-						},that)
+						this.startx = startx
+						this.starty = starty
+						this.endx = endx
+						this.endy = endy
+						this.ctx.draw()
+						for (let item of this.rect) {
+							this.ctx.setStrokeStyle('red')
+							this.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+							this.ctx.draw(true)
+						}
+						this.movingIndex = -1;
+						// let that = this
+						// console.log(this.rect[this.movingIndex])
+						// uni.canvasGetImageData({
+						// 	canvasId: 'rgbCanvas',
+						// 	x:  that.rect[that.movingIndex].startx,
+						// 	y: that.rect[that.movingIndex].starty,
+						// 	width: that.rect[that.movingIndex].endx - that.rect[that.movingIndex].startx,
+						// 	height: that.rect[that.movingIndex].endy - that.rect[that.movingIndex].starty,
+						// 	success(res) {
+						// 		let obj = dataGet(res.data)
+						// 		that.rgbArr[that.movingIndex] = obj
+						// 		console.log(that.rgbArr)
+						// 		that.ctx.draw()
+						// 		for (let item of that.rect) {
+						// 			that.ctx.setStrokeStyle('red')
+						// 			that.ctx.strokeRect(item.startx, item.starty, item.endx - item.startx, item.endy - item.starty)
+						// 			that.ctx.draw(true)
+						// 		}
+						// 		that.movingIndex = -1;
+						// 	},
+						// 	fail(err) {
+						// 		console.log(err)
+						// 	}
+						// },that)
 					} else {
 						return
 					}
@@ -288,13 +299,17 @@
 			revoke() { // 撤销
 				if (this.rect.length >= 1) {
 					console.log(this.rgbArr.length, this.MIC.length, this.rect.length)
-					if (this.MIC.length == this.rect.length) { // 开启梯度再撤销时，浓度数量跟矩形一样就一起撤销
+					// if (this.MIC.length == this.rect.length) { // 开启梯度再撤销时，浓度数量跟矩形一样就一起撤销
+					// 	this.MIC.splice(this.MIC.length - 1, 1);
+					// 	this.rgbArr.splice(this.rgbArr.length - 1, 1);
+					// 	console.log('同时撤销了浓度值')
+					// }
+					if (this.next) {
 						this.MIC.splice(this.MIC.length - 1, 1);
 						this.rgbArr.splice(this.rgbArr.length - 1, 1);
-						console.log('同时撤销了浓度值')
 					}
 					this.rect.splice(this.rect.length - 1, 1);
-
+					console.log(this.MIC, this.rgbArr, this.rect)
 					this.ctx.draw()
 					for (let item of this.rect) {
 						this.ctx.setStrokeStyle('red')

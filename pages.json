@@ -6,11 +6,6 @@
 				"navigationBarTitleText": "Index"
 			}
 		},{
-			"path": "pages/forecast/forecast",
-			"style": {
-				"navigationBarTitleText": "Samples"
-			}
-		},{
 			"path": "pages/canvas/canvas",
 			"style": {
 				"navigationBarTitleText": "ROI Manager"
@@ -18,14 +13,19 @@
 		},{
 			"path": "pages/res/res",
 			"style": {
-				"navigationBarTitleText": "res"
+				"navigationBarTitleText": "Display"
 			}
 		},{
 			"path": "pages/chart/chart",
 			"style": {
-				"navigationBarTitleText": "chart"
+				"navigationBarTitleText": "Chart"
 			}
-		}, {
+		},{
+			"path": "pages/forecast/forecast",
+			"style": {
+				"navigationBarTitleText": "Samples"
+			}
+		},{
 			"path": "pages/fores/fores",
 			"style": {
 				"navigationBarTitleText": "prediction"

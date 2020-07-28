@@ -19,8 +19,7 @@
 		</view>
 		<view class="content">
 			<!-- #ifdef APP-PLUS || H5 -->
-			<view :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts"
-			 v-bind:style="{width:windowWidth+'px',height:'400px'}"></view>
+			<view :prop="option" :change:prop="echarts.updateEcharts" id="echarts" class="echarts" v-bind:style="{width:windowWidth+'px',height:'400px'}"></view>
 			<!-- #endif -->
 			<!-- #ifndef APP-PLUS || H5 -->
 			<view>非 APP、H5 环境不支持</view>
@@ -164,15 +163,29 @@
 				}
 				let averx = sumx / length
 				let avery = sumy / length
-				let fenzi = xiyi - length * averx * avery
-				let fenmuLine = xi2 - length * averx * averx
-				console.log(fenmuLine,yi2,length,avery,avery,fenmuLine * (yi2 - length * avery * avery))
-				// 根号下面 为负数。
-				let fenmu = Math.pow(Math.abs(fenmuLine * (yi2 - length * avery * avery)), 1 / 2)
-				console.log(fenzi,fenmu)
-				let conR = Math.abs(fenzi / fenmu)
-				let lineb = fenzi / fenmuLine
+
+				let covxy = 0
+				let fenmu1 = 0
+				let fenmu2 = 0
+				for (let i = 0; i < length; i++) {
+					covxy = covxy + (arrx[i] - averx) * (arry[i] - avery)
+					fenmu1 = fenmu1 + Math.pow((arrx[i] - averx), 2)
+					fenmu2 = fenmu2 + Math.pow((arry[i] - avery), 2)
+				}
+				let varx = Math.pow(fenmu1, 1 / 2)
+				let vary = Math.pow(fenmu2, 1 / 2)
+				// let fenzi = xiyi - length * averx * avery
+				// let fenmuLine = xi2 - length * averx * averx
+				// console.log(fenmuLine, yi2, length, avery, avery, fenmuLine * (yi2 - length * avery * avery))
+				// console.log(fenzi, fenmu)
+				// let lineb = fenzi / fenmuLine
+				// let linea = avery - lineb * averx
+				console.log(averx,avery)
+				let conR = Math.pow(covxy / (varx * vary), 2)
+
+				let lineb = covxy / (xi2 - length * averx * averx)
 				let linea = avery - lineb * averx
+				console.log(lineb,linea)
 				let obj = {
 					conR,
 					lineb,
@@ -201,6 +214,7 @@
 		onLoad(options) {
 			// _self = this;
 			app.globalData.yName = options.y
+			console.log(app.globalData)
 			this.windowWidth = app.globalData.windowWidth
 			this.windowHeight = app.globalData.windowHeight
 			let categories = app.globalData.MIC.map((cur, index) => {
@@ -215,7 +229,7 @@
 				textSize: 10,
 				data: []
 			}, {
-				name: '浓度' + options.y,
+				// name: '浓度' + options.y,
 				type: 'line',
 				dataLabel: false,
 				color: '#000000',
@@ -283,9 +297,8 @@
 			this.lineb = obj.lineb
 			app.globalData.linea = obj.linea
 			app.globalData.lineb = obj.lineb
-			// console.log(app.globalData)
 			for (let item of categories) {
-				series[1].data.push(Number(item * this.lineb + this.linea))
+				series[1].data.push(Number(item * obj.lineb + obj.linea))
 			}
 			let echart1 = []
 			for (let i = 0; i < categories.length; i++) {
@@ -294,10 +307,11 @@
 				echart1.push(arr)
 			}
 			this.option.series[0].data = echart1
+			
 			let echart2 = []
-			echart2.push([categories[0], Number(categories[0] * this.lineb + this.linea)])
+			echart2.push([categories[0], Number(categories[0] * obj.lineb + obj.linea)])
 			let index = categories.length - 1
-			echart2.push([categories[index], Number(categories[index] * this.lineb + this.linea)])
+			echart2.push([categories[index], Number(categories[index] * obj.lineb + obj.linea)])
 			this.option.series[1].data = echart2
 			// this.option.title.text = 'linear correlation: ' + this.conR.toFixed(4)
 			this.option.yAxis.name = options.y

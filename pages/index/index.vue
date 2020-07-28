@@ -2,11 +2,11 @@
 	<view class="content">
 		<view class="main">
 			<image class="logo-img" src="../../static/logo.svg" mode="scaleToFill"></image>
-			<!-- <text>concentration prediction</text> -->
-			<text>concentration\nmeasurement</text>
+			<!-- <text>concentration\nmeasurement</text> -->
+				<text>Intelligent\nDetection</text>
 		</view>
 		<view class="btn-box">
-			<button class="btn" @click="toPhoto">start</button>
+			<button class="btn" @click="boxShow">start</button>
 		</view>
 	</view>
 </template>
@@ -17,17 +17,22 @@
 	export default {
 		data() {
 			return {
+				show:false
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-			toPhoto() {
+			boxShow(){
+				this.show = true;
+			},
+			toCamera() {
 				let that = this
 				uni.chooseImage({
 					count: 1,
 					sizeType: 'original',
+					 sourceType: ['camera'],
 					success(res) {
 						let tempFilePath = res.tempFilePaths[0]
 						let systemInfo = uni.getSystemInfoSync()
@@ -52,7 +57,38 @@
 						console.log('取消选图')
 					}
 				})
-			}
+			},
+			toAlbum() {
+				let that = this
+				uni.chooseImage({
+					count: 1,
+					sizeType: 'original',
+					 sourceType: ['album'],
+					success(res) {
+						let tempFilePath = res.tempFilePaths[0]
+						let systemInfo = uni.getSystemInfoSync()
+						console.log(systemInfo)
+						app.globalData.windowHeight = systemInfo.windowHeight
+						app.globalData.windowWidth = systemInfo.windowWidth	// 屏幕可视宽度
+						uni.getImageInfo({
+							src: tempFilePath,
+							success(res) {
+								console.log(res)
+								app.globalData.imgInfo = res
+								uni.navigateTo({
+									url: '../canvas/canvas'
+								})
+							},
+							fail(err) {
+								console.log(err)
+							},
+						}) 
+					},
+					fail(err) {
+						console.log('取消选图')
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -67,6 +103,7 @@
 		/* letter-spacing: 28rpx; */
 		letter-spacing: 2px;
 		font-size: 20px;
+		text-align: center;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
