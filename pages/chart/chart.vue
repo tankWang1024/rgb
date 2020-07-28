@@ -25,6 +25,12 @@
 			<view>非 APP、H5 环境不支持</view>
 			<!-- #endif -->
 			<button class="btn" @tap="toForecast">Real sample inspection</button>
+
+			<view class="showbox" @tap="cancelBox" v-if="show">
+				<view class="line line1" @tap="toCamera">camera</view>
+				<view class="line line2" @tap="toAlbum">take a picture</view>
+				<view class="line line3" @tap="cancelBox">cancel</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -39,6 +45,7 @@
 	export default {
 		data() {
 			return {
+				show:false,
 				windowWidth: 0,
 				windowHeight: 0,
 				conR: 0,
@@ -98,10 +105,12 @@
 			}
 		},
 		methods: {
-			toForecast() {
+			toCamera() {
+				let that = this
 				uni.chooseImage({
 					count: 1,
 					sizeType: 'original',
+					sourceType: ['camera'],
 					success(res) {
 						let tempFilePath = res.tempFilePaths[0]
 						uni.getImageInfo({
@@ -114,7 +123,7 @@
 								})
 							},
 							fail(err) {
-
+								console.log(err)
 							},
 						})
 					},
@@ -122,6 +131,40 @@
 						console.log('取消选图')
 					}
 				})
+			},
+			toAlbum() {
+				let that = this
+				uni.chooseImage({
+					count: 1,
+					sizeType: 'original',
+					sourceType: ['album'],
+					success(res) {
+						let tempFilePath = res.tempFilePaths[0]
+						uni.getImageInfo({
+							src: tempFilePath,
+							success(res) {
+								console.log(res)
+								app.globalData.imgInfo2 = res
+								uni.navigateTo({
+									url: '../forecast/forecast'
+								})
+							},
+							fail(err) {
+								console.log(err)
+							},
+						})
+					},
+					fail(err) {
+						console.log('取消选图')
+					}
+				})
+			},
+			cancelBox(e) {
+				console.log(e)
+				this.show= false
+			},
+			toForecast() {
+				this.show = true
 			},
 			// showColumn(canvasId, chartData) {
 			// 	canvaColumn = new uCharts({
@@ -174,18 +217,12 @@
 				}
 				let varx = Math.pow(fenmu1, 1 / 2)
 				let vary = Math.pow(fenmu2, 1 / 2)
-				// let fenzi = xiyi - length * averx * avery
-				// let fenmuLine = xi2 - length * averx * averx
-				// console.log(fenmuLine, yi2, length, avery, avery, fenmuLine * (yi2 - length * avery * avery))
-				// console.log(fenzi, fenmu)
-				// let lineb = fenzi / fenmuLine
-				// let linea = avery - lineb * averx
-				console.log(averx,avery)
+				// console.log(averx,avery)
 				let conR = Math.pow(covxy / (varx * vary), 2)
 
 				let lineb = covxy / (xi2 - length * averx * averx)
 				let linea = avery - lineb * averx
-				console.log(lineb,linea)
+				// console.log(lineb,linea)
 				let obj = {
 					conR,
 					lineb,
@@ -307,7 +344,7 @@
 				echart1.push(arr)
 			}
 			this.option.series[0].data = echart1
-			
+
 			let echart2 = []
 			echart2.push([categories[0], Number(categories[0] * obj.lineb + obj.linea)])
 			let index = categories.length - 1
@@ -395,5 +432,45 @@
 		margin: 40rpx auto;
 		background-color: rgb(255, 196, 62);
 		color: #000000;
+	}
+
+	.showbox {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 10;
+		background-color: rgba(98, 98, 98, .65);
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+
+	.line {
+		width: 95%;
+		margin: 0 auto;
+		font-size: 36rpx;
+		height: 2.3em;
+		line-height: 2.3em;
+		text-align: center;
+		background-color: #FFFFFF;
+		opacity: 1;
+	}
+
+	.line1 {
+		border-radius: 10rpx 10rpx 0 0;
+		border-bottom: 1px solid rgb(220, 220, 223);
+	}
+
+	.line2 {
+		border-radius: 0 0 10rpx 10rpx;
+	}
+
+	.line3 {
+		margin-top: 20rpx;
+		margin-bottom: .5em;
+		border-radius: 10rpx;
+		font-weight: 600;
 	}
 </style>
